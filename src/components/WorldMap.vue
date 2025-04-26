@@ -203,5 +203,7 @@ onBeforeUnmount(() => {
   height: 500px;
   min-width: 800px;
 }
+
+
 </style>
 
