@@ -22,6 +22,7 @@
           <ChinaMap />
         </div>
         <div class="stats-block">
+          <EarthquakeChart />
           <!-- 右侧统计内容 -->
         </div>
       </div>
@@ -35,6 +36,7 @@
 <script setup lang="ts">
 import WorldMap from '@/components/WorldMap.vue'
 import ChinaMap from '@/components/chinaMap.vue'
+import EarthquakeChart from './components/EarthquakeChart.vue';
 </script>
 
 <style scoped>

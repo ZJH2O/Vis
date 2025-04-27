@@ -11,6 +11,7 @@ import { MapChart, LinesChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
 import type { ECharts } from 'echarts/core';
 import provinceData from '@/assets/province_earthquake_counts_fullname.json';
+import { useProvinceStore } from '@/stores/province';
 // 注册必要的组件
 echarts.use([
   TooltipComponent,
@@ -19,6 +20,8 @@ echarts.use([
   LinesChart,
   CanvasRenderer
 ]);
+
+const provinceStore = useProvinceStore();
 
 const chartContainer = ref(null);
 let myChart:ECharts|null = null;
@@ -98,6 +101,14 @@ const initChart = async () => {
   };
 
     myChart.setOption(option);
+
+    // 添加地图点击事件监听
+    myChart.on('click', (params) => {
+      if (params.componentType === 'series' && params.seriesType === 'map') {
+        provinceStore.setSelectedProvince(params.name)
+      }
+    })
+
     window.addEventListener('resize', handleResize);
   } catch (error) {
     console.error('Error loading map data:', error);

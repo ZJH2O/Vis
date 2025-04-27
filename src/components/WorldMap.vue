@@ -31,7 +31,6 @@ const initChart = async () => {
     const response = await fetch("https://img.isqqw.com/profile/upload/2025/03/11/b90bf3d4-6c6f-4ef1-acd1-4edd925acaed.json");
     const worldJson = await response.json();
     echarts.registerMap('world', worldJson);
-    console.log('地图注册验证:', echarts.getMap('central_america')); // 应该显示完整地图对象
     // 飞线数据（示例）
     const option = {
       tooltip: {
