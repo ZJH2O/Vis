@@ -1,33 +1,35 @@
 <template>
-  <div class="container">
-    <!-- 世界地图区块 -->
-    <div class="map-section world-section">
-      <div class="top-row">
-        <div class="map-block">
-          <WorldMap />
+  <div class="background-layer">
+    <div class="container">
+      <!-- 世界地图区块 -->
+      <div class="map-section world-section">
+        <div class="top-row">
+          <div class="map-block">
+            <WorldMap />
+          </div>
+          <div class="stats-block">
+            <!-- 右侧统计内容 -->
+          </div>
         </div>
-        <div class="stats-block">
-          <!-- 右侧统计内容 -->
+        <div class="explanation-block">
+          <!-- 下方解释内容 -->
         </div>
       </div>
-      <div class="explanation-block">
-        <!-- 下方解释内容 -->
-      </div>
-    </div>
 
-    <!-- 中国地图区块 -->
-    <div class="map-section china-section">
-      <div class="top-row">
-        <div class="map-block">
-          <ChinaMap />
+      <!-- 中国地图区块 -->
+      <div class="map-section china-section">
+        <div class="top-row">
+          <div class="map-block">
+            <ChinaMap />
+          </div>
+          <div class="stats-block">
+            <EarthquakeChart />
+            <!-- 右侧统计内容 -->
+          </div>
         </div>
-        <div class="stats-block">
-          <EarthquakeChart />
-          <!-- 右侧统计内容 -->
+        <div class="explanation-block">
+          <!-- 下方解释内容 -->
         </div>
-      </div>
-      <div class="explanation-block">
-        <!-- 下方解释内容 -->
       </div>
     </div>
   </div>
@@ -40,17 +42,42 @@ import EarthquakeChart from './components/EarthquakeChart.vue';
 </script>
 
 <style scoped>
-/* 新增全局重置 */
+html, body {
+  overflow: auto;
+  height: 100%;
+}
+.background-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%vh;
+  z-index: 0;
+  background:
+    /* 基础地质灰 */
+    linear-gradient(160deg, #2d3436 0%, #636e72 100%),
+    /* 断层线纹理 */
+    repeating-linear-gradient(
+      -15deg,
+      transparent,
+      transparent 30px,
+      rgba(214, 137, 16, 0.15) 30px,
+      rgba(214, 137, 16, 0.15) 32px
+    );
 
+}
+
+/*容器样式*/
 .container {
-  width: 80vw;
-  height: 100vh;
+  position: relative; /* 确保在背景层上方 */
+  z-index: 1;
+  width: 90vw;
+  min-height: 120vh;
   display: flex;
   flex-direction: column;
   gap: 40px;
   padding: 40px;
   margin: 0 auto;
-  margin-left: -200px;
   box-sizing: border-box;
 }
 
@@ -59,10 +86,9 @@ import EarthquakeChart from './components/EarthquakeChart.vue';
   display: flex;
   flex-direction: column;
   min-height: 80vh;
-  border: 1px solid #eee;
+
   padding: 20px auto;
   border-radius: 8px;
-  overflow: hidden;
 }
 
 .top-row {
@@ -73,21 +99,23 @@ import EarthquakeChart from './components/EarthquakeChart.vue';
 
 .map-block {
   flex: 1;
+  background-color: white;
   position: relative;
-  padding: 15px;
-  height: 60vh;
+  padding: 30px 10px;;
+  min-height: 500px;
   min-width: 80wh;
 }
 
 .stats-block {
   flex: 1;
-  padding: 20px;
+  padding: 20px 40px;
   background: #f8f9fa;
   border-left: 1px solid #eee;
 }
 
+
 .explanation-block {
-  height: 300px;
+  height: 200px;
   padding: 15px;
   background: #f1f3f5;
   border-top: 1px solid #eee;

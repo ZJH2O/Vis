@@ -1,12 +1,12 @@
 <template>
   <div class="p-4">
     <!-- 下拉选择框 -->
-    <select v-model="selectedProvince" @change="updateChart" class="border p-2 rounded mb-4">
+    <!-- <select v-model="selectedProvince" @change="updateChart" class="border p-2 rounded mb-4">
       <option v-for="p in provinces" :key="p" :value="p">{{ p }}</option>
-    </select>
+    </select> -->
 
     <!-- 图表容器 -->
-    <div ref="chartRef" style="width: 1000px; height: 500px;"></div>
+    <div ref="chartRef" class="chart" ></div>
   </div>
 </template>
 
@@ -71,8 +71,7 @@ function updateChart() {
         type: 'bar',
         yAxisIndex: 0,
         data: counts,
-        smooth: true,
-        lineStyle: { color: '#5470C6' }
+        itemStyle: { color: '#74c476' }
       },
       {
         name: '平均震级（M）',
@@ -80,7 +79,7 @@ function updateChart() {
         yAxisIndex: 1,
         smooth: true,
         data: magnitudes,
-        itemStyle: { color: '#91CC75' }
+        itemStyle: { color: '#4292c6' }
       }
     ]
   }
@@ -112,5 +111,10 @@ watch(() => provinceStore.selectedProvince, updateChart)
 /* 简单美化一下 */
 select {
   min-width: 200px;
+}
+.chart{
+  width: 100%;
+  width: 500px;
+  height: 500px;
 }
 </style>

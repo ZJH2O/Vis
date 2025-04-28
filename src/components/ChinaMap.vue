@@ -104,8 +104,14 @@ const initChart = async () => {
 
     // 添加地图点击事件监听
     myChart.on('click', (params) => {
+
       if (params.componentType === 'series' && params.seriesType === 'map') {
-        provinceStore.setSelectedProvince(params.name)
+        if(params.name === provinceStore.selectedProvince){
+        provinceStore.resetProvince()
+        }
+        else{
+          provinceStore.setSelectedProvince(params.name)
+        }
       }
     })
 
@@ -138,7 +144,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .world-chart-container {
   width: 100%;
-  height: 600px;
-  min-width: 300px;
+  height: 500px;
+  min-width: 800px;
 }
 </style>

@@ -8,5 +8,8 @@ export const useProvinceStore = defineStore('province', {
       setSelectedProvince(province: string) {
         this.selectedProvince = province
       },
+      resetProvince() {
+        this.selectedProvince = '全国'
+      }
   },
 })
