@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import WorldMap from '@/components/WorldMap.vue'
-import ChinaMap from '@/components/chinaMap.vue'
+import ChinaMap from '@/components/ChinaMap.vue'
 import EarthquakeChart from './components/EarthquakeChart.vue';
 </script>
 
