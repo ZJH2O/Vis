@@ -51,19 +51,20 @@ html, body {
   top: 0;
   left: 0;
   width: 100%;
-  min-height: 100%vh;
+  min-height: 100%;
   z-index: 0;
   background:
-    /* 基础地质灰 */
-    linear-gradient(160deg, #2d3436 0%, #636e72 100%),
-    /* 断层线纹理 */
+    /* 深海蓝渐变基底 */
+    linear-gradient(160deg, #0a3d62 0%, #079992 100%),
+    /* 青蓝色断层线 */
     repeating-linear-gradient(
       -15deg,
       transparent,
       transparent 30px,
-      rgba(214, 137, 16, 0.15) 30px,
-      rgba(214, 137, 16, 0.15) 32px
+      rgba(52, 152, 219, 0.2) 30px,  /* 改用半透明青蓝色 */
+      rgba(52, 152, 219, 0.2) 32px
     );
+
 
 }
 

@@ -7,23 +7,25 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import * as echarts from 'echarts/core';
 import type { ECharts } from 'echarts/core';
-
+import worldearthquakeData from '@/assets/WorldEarthquakes.json'; // 替换为你的数据文件路径
 // 注册必要的组件
 
+// 定义时间轴选项类型
 
 const chartContainer = ref(null);
 let myChart:ECharts|null = null;
 
 // 模拟地震数据（替换成你的真实数据）
-const earthquakeData = [
-  // 哥斯达黎加境内地震点
-  { lng: -84.0, lat: 10.0, mag: 6.3, depth: 35 }, // San José附近
-  { lng: -85.5, lat: 10.5, mag: 5.8, depth: 20 }, // 尼加拉瓜湖区域
-  // 尼加拉瓜境内地震点
-  { lng: -86.0, lat: 12.0, mag: 6.1, depth: 50 }  // 马那瓜附近
-];
-let initialGeoConfig = {center:[0,0],
-zoom:1.2}; // 用于保存初始状态
+const earthquakeData = worldearthquakeData.map(item => ({
+  lng: item.lng,
+  lat: item.lat,
+  mag: item.mag,
+  depth: item.depth,
+  time: item.year,
+}));
+let initialGeoConfig = {center:[0,0],zoom:1.2}; // 用于保存初始状态
+
+const times = Array.from(new Set(earthquakeData.map(item => item.time)))
 
 const initChart = async () => {
   try {
@@ -35,81 +37,129 @@ const initChart = async () => {
     const option = {
       tooltip: {
         trigger: "item",
+        backgroundColor: 'rgba(2,28,53,0.9)',
+        borderColor: '#3FD2E5',
+        borderWidth: 1,
+        padding: [12, 24],
+        textStyle: {
+          color: '#FFF',
+          fontSize: 14
+        },
         formatter: (params) => {
-          if (params.seriesType === 'scatter') {
-            // 正确访问数据字段
-            const lng = params.data.value[0].toFixed(2);
-            const lat = params.data.value[1].toFixed(2);
-            const mag = params.data.value[2];
-            const depth = params.data.value[3];
-
-            return `震中位置: ${lng}°E, ${lat}°N<br>
-                    震级: ${mag}<br>
-                    深度: ${depth}公里`;
+          if (params.seriesType === 'scatter' && params.data.value[2] >= 7) {
+            const [lng, lat, mag, depth, time] = params.data.value;
+            return `<div style="border-bottom:1px solid #3FD2E5;padding-bottom:8px;margin-bottom:8px">
+                      <i style="display:inline-block;width:8px;height:8px;background:${params.color};border-radius:50%"></i>
+                      <strong style="margin-left:6px">${mag}级地震</strong>
+                    </div>
+                    <div>经度: ${lng.toFixed(2)}°E</div>
+                    <div>纬度: ${lat.toFixed(2)}°N</div>
+                    <div>深度: ${depth}公里</div>
+                    <div>时间: ${time}年</div>`;
           }
-          return params.name;
+          return null;
         }
       },
       visualMap: [
         {
           type: 'continuous',
-          min: 5,
-          max: 7,
-          dimension: 2, // 绑定到 value[2] (mag)
-          text: ['强震', '弱震'],
-          inRange: { color: ['#FFD700', '#FF4500'] },
+          min: 7,
+          max: 9,
+          dimension: 2,
+          text: ['9级','7级'],
+          inRange: {
+            symbolsize: [10, 60], // 震级对应的大小范围
+            color: ['#6CD9E5', '#3A8BFF', '#0A2472'] // 蓝绿色系渐变
+          },
+          textStyle: { color: '#666' },
           left: '5%',
-          bottom: '10%'
+          bottom: '15%',
+          precision: 1
         },
         {
           type: 'continuous',
           min: 0,
-          max: 200,
-          dimension: 3, // 绑定到 value[3] (depth)
-          text: ['浅源', '深源'],
-          inRange: { symbolSize: [10, 30] },
+          max: 700,
+          dimension: 3,
+          text: ['深源','浅源'],
+          inRange: {
+            color: ['#FF6B6B','#FFD700'] // 深度颜色辅助
+          },
           right: '5%',
-          bottom: '10%'
+          bottom: '15%'
         }
       ],
       series: [{
         type: 'scatter',
         coordinateSystem: 'geo',
-        symbol: 'circle',
-        data: earthquakeData.map(d => ({
-          value: [d.lng, d.lat, d.mag, d.depth],
+        data: earthquakeData.filter(d => d.mag > 7).map(d => ({
+          value: [d.lng, d.lat, d.mag, d.depth,d.time],
           name: `${d.mag}级地震`
         })),
-        symbolSize: val => Math.sqrt(val[2]) * 6, // 震级越大符号越大
+        symbolSize: val => {
+          const baseMag = 7;    // 基准震级
+          const baseSize = 12;  // 基准尺寸
+          const scaleFactor = 10; // 每级放大系数
+
+          return baseSize + (val[2] - baseMag) * scaleFactor;
+        } ,// 动态大小计算
         encode: {
           lng: 0,
           lat: 1,
           tooltip: [2, 3]
         },
         itemStyle: {
-          opacity: 0.9,
-          borderWidth: 1,
-          borderColor: '#FFF'
+          opacity: 0.85,
+          borderWidth: 1.5,
+          borderColor: 'rgba(255,255,255,0.8)',
+          shadowBlur: 15,
+          shadowColor: 'rgba(58,139,255,0.5)'
         },
         emphasis: {
           itemStyle: {
-            shadowBlur: 10,
-            shadowColor: 'rgba(255,0,0,0.5)'
+            opacity: 1,
+            shadowBlur: 25,
+            shadowColor: '#3A8BFF'
+          },
+        },
+        animationDelay: idx => idx * 50 // 数据加载动画
+      }],
+      geo: {
+        map: 'world',
+        roam: true,
+        zoomLimit: { max: 8, min: 1 }, // 限制缩放范围
+        center: initialGeoConfig.center,
+        zoom: initialGeoConfig.zoom,
+        label: {
+          show: false // 隐藏国家标签
+        },
+        itemStyle: {
+          areaColor: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [{
+              offset: 0, color: '#1B3A6F' // 海洋深蓝
+            }, {
+              offset: 1, color: '#0A1930' // 深海颜色
+            }]
+          },
+          borderColor: 'rgba(58,139,255,0.3)',
+          borderWidth: 0.8
+        },
+        emphasis: {
+          itemStyle: {
+            areaColor: '#2A4F8D', // 高亮国家颜色
+            borderColor: '#3A8BFF',
+            borderWidth: 1.2
           }
         }
       }
-    ],
-    geo: {
-          map: 'world',
-          roam: true,
-          center: [0, 0],
-          zoom: 1.2,
-          itemStyle: {
-            areaColor: '#E6F3FF',
-            borderColor: '#4A90E2'
-          }
-     },
-  };
+    };
+
+
 
     myChart.setOption(option);
 
