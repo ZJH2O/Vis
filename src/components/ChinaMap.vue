@@ -42,9 +42,9 @@ const initChart = async () => {
     const option = {
     tooltip: {
       trigger: "item",
-      formatter: (params) => {
+      formatter: (params: { seriesType: string; name: string; data: { value: number; fromName?: string; toName?: string }; color: string }) => {
         if (params.data && params.seriesType !== 'lines') {
-          if (params.value) {
+          if (params.data.value) {
             const currentValue = params.data.value;
             const percentage = ((currentValue / totalValue) * 100).toFixed(2);
             return `${params.name}<br/>地震次数: ${currentValue}<br/>占比 ${percentage}%`;
@@ -70,7 +70,7 @@ const initChart = async () => {
         name: "地震次数",
         type: "map",
         map: "China",
-        roam: 'scale',
+        roam: true,
         zoom: 1.2,
         scaleLimit: {
           min: 1.0,  // 禁止缩小到初始尺寸以下
@@ -100,10 +100,11 @@ const initChart = async () => {
 
   };
 
-    myChart.setOption(option);
-
+    if(myChart){
+      myChart.setOption(option);
+    }
     // 添加地图点击事件监听
-    myChart.on('click', (params) => {
+    myChart?.on('click', (params) => {
 
       if (params.componentType === 'series' && params.seriesType === 'map') {
         if(params.name === provinceStore.selectedProvince){

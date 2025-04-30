@@ -25,7 +25,7 @@ const earthquakeData = worldearthquakeData.map(item => ({
 }));
 let initialGeoConfig = {center:[0,0],zoom:1.2}; // 用于保存初始状态
 
-const times = Array.from(new Set(earthquakeData.map(item => item.time)))
+//const times = Array.from(new Set(earthquakeData.map(item => item.time)))
 
 const initChart = async () => {
   try {
@@ -45,7 +45,7 @@ const initChart = async () => {
           color: '#FFF',
           fontSize: 14
         },
-        formatter: (params) => {
+        formatter: (params: { seriesType: string; data: { value: number[] }; color: string }) => {
           if (params.seriesType === 'scatter' && params.data.value[2] >= 7) {
             const [lng, lat, mag, depth, time] = params.data.value;
             return `<div style="border-bottom:1px solid #3FD2E5;padding-bottom:8px;margin-bottom:8px">
@@ -96,10 +96,10 @@ const initChart = async () => {
           value: [d.lng, d.lat, d.mag, d.depth,d.time],
           name: `${d.mag}级地震`
         })),
-        symbolSize: val => {
+        symbolSize: (val: number[]) => {
           const baseMag = 7;    // 基准震级
-          const baseSize = 12;  // 基准尺寸
-          const scaleFactor = 10; // 每级放大系数
+          const baseSize = 5;  // 基准尺寸
+          const scaleFactor = 5; // 每级放大系数
 
           return baseSize + (val[2] - baseMag) * scaleFactor;
         } ,// 动态大小计算
@@ -122,7 +122,7 @@ const initChart = async () => {
             shadowColor: '#3A8BFF'
           },
         },
-        animationDelay: idx => idx * 50 // 数据加载动画
+        animationDelay: (idx: number) => idx * 50 // 数据加载动画
       }],
       geo: {
         map: 'world',
@@ -161,39 +161,50 @@ const initChart = async () => {
 
 
 
-    myChart.setOption(option);
+    if (myChart) {
+      myChart.setOption(option);
+    }
 
     // 获取地图初始状态（延迟确保渲染完成）
     setTimeout(() => {
-      const currentOption = myChart.getOption();
-      initialGeoConfig = {
-        center: currentOption.geo[0].center,
-        zoom: currentOption.geo[0].zoom
-      };
-      console.log('初始地图状态已记录:', initialGeoConfig);
+      if (myChart) {
+        const currentOption = myChart.getOption();
+        if (currentOption.geo && Array.isArray(currentOption.geo) && currentOption.geo[0]) {
+          initialGeoConfig = {
+            center: currentOption.geo[0].center,
+            zoom: currentOption.geo[0].zoom
+          };
+          console.log('初始地图状态已记录:', initialGeoConfig);
+        } else {
+          console.warn('Geo configuration is missing or invalid in the chart options.');
+        }
+      } else {
+        console.warn('myChart is null.');
+      }
     }, 500);
     // 添加点击事件监听
 
-    myChart.on('click', { seriesIndex: 0 }, function(params) {
-      if (params.seriesType === 'scatter') {
-        // 获取点击点的坐标和当前缩放级别
-        const [lng, lat] = params.data.value;
-        const currentZoom = myChart.getOption().geo.zoom || 1.2;
+    myChart?.on('click', function(params) {
+      if (params.seriesType === 'scatter' && typeof params.data === 'object' && params.data !== null && 'value' in params.data && Array.isArray(params.data.value)) {
+      // 获取点击点的坐标和当前缩放级别
+      const [lng, lat] = params.data.value;
+      const geoOptions = myChart?.getOption()?.geo as Array<{ zoom?: number }> | undefined;
+      const currentZoom = (geoOptions?.[0]?.zoom ?? 1.2);
 
-        // 计算新的中心点和缩放级别
-        myChart.setOption({
-          geo: {
-            center: [lng, lat],
-            zoom: currentZoom * 15
-          }
-        });
+      // 计算新的中心点和缩放级别
+      myChart?.setOption({
+        geo: [{
+        center: [lng, lat],
+        zoom: Math.min(currentZoom * 1.5, 8) // 限制最大缩放级别为 8
+        }]
+      });
       }
     });
 
     // 右键事件处理（添加类型守卫）
-    myChart.on('dblclick', function(params) {
+    myChart?.on('dblclick', function() {
 
-      if (initialGeoConfig.center && initialGeoConfig.zoom) {
+      if (initialGeoConfig.center && initialGeoConfig.zoom && myChart) {
         myChart.setOption({
           geo: [{
             center: initialGeoConfig.center,
@@ -202,7 +213,7 @@ const initChart = async () => {
           animationDuration: 1000
         });
       } else {
-        console.warn('初始地图配置未正确初始化');
+        console.warn('初始地图配置未正确初始化或 myChart 为 null');
       }
     });
 
@@ -212,11 +223,15 @@ const initChart = async () => {
     console.log('已注册地图:', echarts.getMap('central_america'));
     // 3. 调试方法：强制显示所有元素
     setTimeout(() => {
-          myChart.dispatchAction({
-            type: 'showTip',
-            seriesIndex: 0,
-            dataIndex: 0
-          });
+          if (myChart) {
+            myChart.dispatchAction({
+              type: 'showTip',
+              seriesIndex: 0,
+              dataIndex: 0
+            });
+          } else {
+            console.warn('myChart is null, cannot dispatch action.');
+          }
         }, 1000);
 
     // 验证数据坐标

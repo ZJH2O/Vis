@@ -8,5 +8,9 @@
       "path": "./tsconfig.app.json"
     }
   ],
+  "compilerOptions": {
+    // other options
+    "resolveJsonModule": true
+  }
   
 }
