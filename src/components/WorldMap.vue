@@ -35,6 +35,7 @@ const initChart = async () => {
     echarts.registerMap('world', worldJson);
     // 飞线数据（示例）
     const option = {
+
       tooltip: {
         trigger: "item",
         backgroundColor: 'rgba(2,28,53,0.9)',
@@ -61,34 +62,47 @@ const initChart = async () => {
         }
       },
       visualMap: [
-        {
-          type: 'continuous',
-          min: 7,
-          max: 9,
-          dimension: 2,
-          text: ['9级','7级'],
-          inRange: {
-            symbolsize: [10, 60], // 震级对应的大小范围
-            color: ['#6CD9E5', '#3A8BFF', '#0A2472'] // 蓝绿色系渐变
-          },
-          textStyle: { color: '#666' },
-          left: '5%',
-          bottom: '15%',
-          precision: 1
-        },
-        {
-          type: 'continuous',
-          min: 0,
-          max: 700,
-          dimension: 3,
-          text: ['深源','浅源'],
-          inRange: {
-            color: ['#FF6B6B','#FFD700'] // 深度颜色辅助
-          },
-          right: '5%',
-          bottom: '15%'
-        }
-      ],
+  {
+    type: 'continuous',
+    min: 7,
+    max: 9,
+    dimension: 2,          // 假設震級在數據維度2
+    text: ['9級', '7級'],
+    inRange: {
+      symbolSize: [5, 15] // 僅用震級控制大小，移除顏色設置
+    },
+    textStyle: { color: '#666' },
+    left: '5%',
+    bottom: '15%',
+    precision: 1
+  },
+  {
+    type: 'continuous',
+    min: 0,
+    max: 700,
+    dimension: 3,          // 假設深度在數據維度3
+    text: ['深源', '淺源'],
+    inRange: {
+      color: ['#FF6B6B', '#FFD700'] // 僅用深度控制顏色
+    },
+    right: '5%',
+    bottom: '15%'
+  },
+  {
+    type: 'continuous',
+    min: 2005,
+    max: Math.max(...earthquakeData.map((item) => item.time)),
+    orient: 'horizontal',   // 关键参数：横向布局
+    left: 'center',           // 左边界留空 10%
+    bottom: '5%',
+    dimension: 4,          // 假設時間在數據維度4
+    text: ["2005", "2025"],
+    calculable: true,
+    inRange: {
+      opacity: [0.3, 1]    // 用透明度或符號類型表示時間
+    }
+  }
+],
       series: [{
         type: 'scatter',
         coordinateSystem: 'geo',
@@ -98,7 +112,7 @@ const initChart = async () => {
         })),
         symbolSize: (val: number[]) => {
           const baseMag = 7;    // 基准震级
-          const baseSize = 5;  // 基准尺寸
+          const baseSize = 7;  // 基准尺寸
           const scaleFactor = 5; // 每级放大系数
 
           return baseSize + (val[2] - baseMag) * scaleFactor;
