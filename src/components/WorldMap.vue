@@ -14,7 +14,7 @@ let myChart: ECharts | null = null;
 
 // 模拟地震数据（替换成你的真实数据）
 const earthquakeData = worldearthquakeData.map(item => ({
-  lng: item.lng,
+  lng: item.lng, 
   lat: item.lat,
   mag: item.mag,
   depth: item.depth,
@@ -31,6 +31,7 @@ const initChart = async () => {
     echarts.registerMap('world', worldJson);
 
     const option = {
+
       tooltip: {
         trigger: "item",
         backgroundColor: 'rgba(2,28,53,0.9)',
@@ -57,6 +58,7 @@ const initChart = async () => {
         }
       },
       visualMap: [
+<<<<<<< HEAD
         {
           type: 'continuous',
           min: 7,
@@ -111,6 +113,76 @@ const initChart = async () => {
           })),
           symbol: 'circle',
           symbolSize: (val: number[]) => 10 + (val[2] - 7) * 2,
+=======
+  {
+    type: 'continuous',
+    min: 7,
+    max: 9,
+    dimension: 2,          // 假設震級在數據維度2
+    text: ['9級', '7級'],
+    inRange: {
+      symbolSize: [5, 15] // 僅用震級控制大小，移除顏色設置
+    },
+    textStyle: { color: '#666' },
+    left: '5%',
+    bottom: '15%',
+    precision: 1
+  },
+  {
+    type: 'continuous',
+    min: 0,
+    max: 700,
+    dimension: 3,          // 假設深度在數據維度3
+    text: ['深源', '淺源'],
+    inRange: {
+      color: ['#FF6B6B', '#FFD700'] // 僅用深度控制顏色
+    },
+    right: '5%',
+    bottom: '15%'
+  },
+  {
+    type: 'continuous',
+    min: 2005,
+    max: Math.max(...earthquakeData.map((item) => item.time)),
+    orient: 'horizontal',   // 关键参数：横向布局
+    left: 'center',           // 左边界留空 10%
+    bottom: '5%',
+    dimension: 4,          // 假設時間在數據維度4
+    text: ["2005", "2025"],
+    calculable: true,
+    inRange: {
+      opacity: [0.3, 1]    // 用透明度或符號類型表示時間
+    }
+  }
+],
+      series: [{
+        type: 'scatter',
+        coordinateSystem: 'geo',
+        data: earthquakeData.filter(d => d.mag > 7).map(d => ({
+          value: [d.lng, d.lat, d.mag, d.depth,d.time],
+          name: `${d.mag}级地震`
+        })),
+        symbolSize: (val: number[]) => {
+          const baseMag = 7;    // 基准震级
+          const baseSize = 7;  // 基准尺寸
+          const scaleFactor = 5; // 每级放大系数
+
+          return baseSize + (val[2] - baseMag) * scaleFactor;
+        } ,// 动态大小计算
+        encode: {
+          lng: 0,
+          lat: 1,
+          tooltip: [2, 3]
+        },
+        itemStyle: {
+          opacity: 0.85,
+          borderWidth: 1.5,
+          borderColor: 'rgba(255,255,255,0.8)',
+          shadowBlur: 15,
+          shadowColor: 'rgba(58,139,255,0.5)'
+        },
+        emphasis: {
+>>>>>>> 4791c670caa3d74ea221c6052ba1fdec7b3b8a95
           itemStyle: {
             color: '#3A8BFF',
             opacity: 0.6,
