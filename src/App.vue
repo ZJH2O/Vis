@@ -25,6 +25,7 @@
           </div>
           <div class="stats-block">
             <EarthquakeChart />
+            <EmotionStackedChart />
             <!-- 右侧统计内容 -->
           </div>
         </div>
@@ -59,6 +60,8 @@ import WorldMap from '@/components/WorldMap.vue'
 import ChinaMap from '@/components/ChinaMap.vue'
 import EarthquakeChart from './components/EarthquakeChart.vue';
 import WordCloud from './components/WordCloud.vue';
+import EmotionStackedChart from '@/components/EmotionStackedChart.vue'
+
 </script>
 
 <style scoped>
