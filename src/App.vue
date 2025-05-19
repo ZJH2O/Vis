@@ -7,9 +7,9 @@
           <div class="map-block">
             <WorldMap />
           </div>
-          <div class="stats-block">
-            <!-- 右侧统计内容 -->
-          </div>
+          <!-- <div class="stats-block">
+            <WordCloud/>
+          </div> -->
         </div>
         <div class="explanation-block">
           <!-- 下方解释内容 -->
@@ -32,6 +32,23 @@
 
         </div>
       </div>
+
+       <!-- 新增情感分析区块 -->
+       <div class="map-section sentiment-section">
+        <div class="top-row">
+          <div class="emotion-block">
+            <EmotionAnalysis />
+          </div>
+          <div class="frequency-block">
+            <WordCloud />
+          </div>
+        </div>
+        <div class="explanation-block">
+          <!-- 下方解释内容 -->
+        </div>
+      </div>
+
+
     </div>
   </div>
 </template>
@@ -40,6 +57,7 @@
 import WorldMap from '@/components/WorldMap.vue'
 import ChinaMap from '@/components/ChinaMap.vue'
 import EarthquakeChart from './components/EarthquakeChart.vue';
+import WordCloud from './components/WordCloud.vue';
 </script>
 
 <style scoped>
@@ -139,6 +157,32 @@ html, body {
   .stats-block {
     border-left: none;
     border-top: 1px solid #eee;
+  }
+}
+
+
+.emotion-block,
+.frequency-block {
+  flex: 1;
+  background: white;
+  padding: 25px;
+  min-height: 400px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .sentiment-section .top-row {
+    flex-direction: column;
+  }
+
+  .emotion-block,
+  .frequency-block {
+    width: 100%;
+    min-height: 300px;
+  }
+
+  .emotion-block {
+    margin-bottom: 15px;
   }
 }
 </style>

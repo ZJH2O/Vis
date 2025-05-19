@@ -11,7 +11,7 @@ import {
   LineChart,
   ScatterChart,
   LinesChart,
-  HeatmapChart
+  HeatmapChart,
 } from 'echarts/charts';
 import {
   CanvasRenderer,
@@ -31,6 +31,6 @@ export const useECharts = () => {
     LinesChart,
     CanvasRenderer,
     SVGRenderer,
-    HeatmapChart
+    HeatmapChart,
   ]);
 };

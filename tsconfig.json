@@ -10,7 +10,8 @@
   ],
   "compilerOptions": {
     // other options
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": ["echarts"]
   }
   
 }
