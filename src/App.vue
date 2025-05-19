@@ -5,7 +5,7 @@
       <div class="map-section world-section">
         <div class="top-row">
           <div class="map-block">
-            <WorldMap />
+            <!-- <WorldMap /> -->
           </div>
           <!-- <div class="stats-block">
             <WordCloud/>

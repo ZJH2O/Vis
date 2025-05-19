@@ -17,6 +17,7 @@ import {
 import { LabelLayout } from 'echarts/features'
 import { CanvasRenderer } from 'echarts/renderers'
 import Data from '../assets/word_frequency_analysis_pro.json'
+import { color } from 'echarts'
 // 注册必需组件
 echarts.use([
   BarChart,
@@ -107,6 +108,7 @@ const getOption = ():echarts.EChartsCoreOption => ({
     text: '地震舆情词云分析',
     subtext: `数据时段: ${data.time_blocks[0].block_start} ~ ${data.time_blocks.slice(-1)[0].block_end}`,
     left: 'center',
+    padding:[40,0,0,0],
     textStyle: {
       color: '#2c3e50',
       fontSize: 20,
@@ -116,25 +118,32 @@ const getOption = ():echarts.EChartsCoreOption => ({
     subtextStyle: {
       color: '#7f8c8d',
       fontSize: 14,
-      padding: 20,
+      padding:[60,0,0,0],
     }
   },
   tooltip: {
     trigger: 'item',
     formatter: (params: any) => {
       if (params.seriesType === 'wordCloud') {
-        return `${params.name}: ${params.value}`
+        return `${params.name}<br/>词频: ${params.value}`
       }
       if (params.seriesType === 'bar') {
-        return `${params.name}<br/>词频: ${params.value}`
+        const timeBlock = data.time_blocks[params.dataIndex]
+        const isWordSelected = currentWord.value !== null
+        let tip = `${params.name}<br/>${isWordSelected ? '当前词频' : '总词频'}: ${params.value}`
+        if (!isWordSelected) {
+        const topWords = timeBlock.top_words.slice(0, 3).map(w => w.word).join(', ')
+        tip += `<br/>高频词: ${topWords}`
+       }
+       return tip
       }
       return '';
     }
   },
   polar: {
     z:0,
-    center: ['50%', '52%'],
-    radius: ['72%', '92%'],
+    center: ['50%', '60%'],
+    radius: ['70%', '92%'],
     backgroundColor: {
       type: 'angular',
       colorStops: [
@@ -156,8 +165,9 @@ const getOption = ():echarts.EChartsCoreOption => ({
       show: true,
       type: 'shadow',
       label: {
-        show: false,
-        backgroundColor: '#2c3e50',
+        show: true,
+        backgroundColor: 'rgba(255, 255, 255, 0.6)', // 半透明白色背景
+        color: '#2c3e50', // 深色文字
       },
       shadowStyle: {
           color: 'rgba(255, 176, 82, 0.3)', // 浅蓝色半透明阴影
@@ -191,10 +201,10 @@ const getOption = ():echarts.EChartsCoreOption => ({
       type: 'wordCloud',
       shape: 'circle',
       left: 'center',
-      top: 'center',
+      top: '25%',
       width: '70%',
       height: '70%',
-      sizeRange: [12, 60],
+      sizeRange: [12, 62],
       rotationRange: [0, 0],
       gridSize: 8,
       textStyle: {
@@ -285,11 +295,12 @@ onMounted( () => {
 
 <style scoped>
 .chart {
-  width: 700px;
-  height: 550px;
-  background: radial-gradient(circle at 50% 50%,
+  width: 550px;
+  height: 650px;
+  background: radial-gradient(circle at 50% 60%,
     rgba(255,240,150,0.9) 0%,
     rgba(255,250,200,0.1) 70%);
+
 }
 
 </style>
