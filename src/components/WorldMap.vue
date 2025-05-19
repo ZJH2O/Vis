@@ -8,24 +8,20 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import * as echarts from 'echarts/core';
 import type { ECharts } from 'echarts/core';
 import worldearthquakeData from '@/assets/WorldEarthquakes.json'; // 替换为你的数据文件路径
-// 注册必要的组件
-
-// 定义时间轴选项类型
 
 const chartContainer = ref(null);
-let myChart:ECharts|null = null;
+let myChart: ECharts | null = null;
 
 // 模拟地震数据（替换成你的真实数据）
 const earthquakeData = worldearthquakeData.map(item => ({
-  lng: item.lng,
+  lng: item.lng, 
   lat: item.lat,
   mag: item.mag,
   depth: item.depth,
   time: item.year,
 }));
-let initialGeoConfig = {center:[0,0],zoom:1.2}; // 用于保存初始状态
 
-//const times = Array.from(new Set(earthquakeData.map(item => item.time)))
+let initialGeoConfig = { center: [0, 0], zoom: 1.2 }; // 保存初始状态
 
 const initChart = async () => {
   try {
@@ -33,7 +29,7 @@ const initChart = async () => {
     const response = await fetch("https://img.isqqw.com/profile/upload/2025/03/11/b90bf3d4-6c6f-4ef1-acd1-4edd925acaed.json");
     const worldJson = await response.json();
     echarts.registerMap('world', worldJson);
-    // 飞线数据（示例）
+
     const option = {
 
       tooltip: {
@@ -46,8 +42,8 @@ const initChart = async () => {
           color: '#FFF',
           fontSize: 14
         },
-        formatter: (params: { seriesType: string; data: { value: number[] }; color: string }) => {
-          if (params.seriesType === 'scatter' && params.data.value[2] >= 7) {
+        formatter: (params: any) => {
+          if (params.seriesType === 'scatter' && params.data?.value?.length >= 5) {
             const [lng, lat, mag, depth, time] = params.data.value;
             return `<div style="border-bottom:1px solid #3FD2E5;padding-bottom:8px;margin-bottom:8px">
                       <i style="display:inline-block;width:8px;height:8px;background:${params.color};border-radius:50%"></i>
@@ -62,6 +58,62 @@ const initChart = async () => {
         }
       },
       visualMap: [
+<<<<<<< HEAD
+        {
+          type: 'continuous',
+          min: 7,
+          max: 9,
+          dimension: 2, // 震级在第2维
+          seriesIndex: 0, // 震级图层
+          text: ['9级', '7级'],
+          inRange: {
+            symbolSize: [10, 18]
+          },
+          textStyle: { color: '#666' },
+          left: '5%',
+          bottom: '15%',
+          precision: 1
+        },
+        {
+          type: 'continuous',
+          min: 0,
+          max: 700,
+          dimension: 3, // 深度在第3维
+          seriesIndex: 1, // 深度图层
+          text: ['深源', '浅源'],
+          inRange: {
+            color: ['#FF6B6B', '#FFD700']
+          },
+          right: '5%',
+          bottom: '15%'
+        },
+        {
+          type: 'continuous',
+          min: 2005,
+          max: Math.max(...earthquakeData.map((item) => item.time)),
+          orient: 'horizontal',
+          left: 'center',
+          bottom: '5%',
+          dimension: 4,
+          text: ["2005", "2025"],
+          calculable: true,
+          inRange: {
+            opacity: [0.3, 1]
+          }
+        }
+      ],
+      series: [
+        {
+          name: '外圈震级',
+          type: 'scatter',
+          coordinateSystem: 'geo',
+          data: earthquakeData.filter(d => d.mag > 7).map(d => ({
+            value: [d.lng, d.lat, d.mag, d.depth, d.time],
+            name: `${d.mag}级地震`
+          })),
+          symbol: 'circle',
+          symbolSize: (val: number[]) => 10 + (val[2] - 7) * 2,
+=======
   {
     type: 'continuous',
     min: 7,
@@ -130,56 +182,77 @@ const initChart = async () => {
           shadowColor: 'rgba(58,139,255,0.5)'
         },
         emphasis: {
+>>>>>>> 4791c670caa3d74ea221c6052ba1fdec7b3b8a95
           itemStyle: {
-            opacity: 1,
-            shadowBlur: 25,
-            shadowColor: '#3A8BFF'
+            color: '#3A8BFF',
+            opacity: 0.6,
+            borderColor: '#ffffff',
+            borderWidth: 0.8
           },
+          z: 1,
+          encode: {
+            lng: 0,
+            lat: 1,
+            tooltip: [2, 3]
+          },
+          emphasis: {
+            itemStyle: {
+              opacity: 1,
+              shadowBlur: 10,
+              shadowColor: '#3A8BFF'
+            }
+          }
         },
-        animationDelay: (idx: number) => idx * 50 // 数据加载动画
-      }],
+        {
+          name: '内圈深度',
+          type: 'scatter',
+          coordinateSystem: 'geo',
+          data: earthquakeData.filter(d => d.mag > 7).map(d => ({
+            value: [d.lng, d.lat, d.mag, d.depth, d.time],
+            name: `${d.mag}级地震`
+          })),
+          symbol: 'circle',
+          symbolSize: (val: number[]) => 4 + (val[2] - 7) * 1.2,
+          itemStyle: {
+            borderColor: '#333',
+            borderWidth: 0.5
+          },
+          z: 2,
+          encode: {
+            lng: 0,
+            lat: 1,
+            tooltip: [2, 3]
+          }
+        }
+      ],
       geo: {
         map: 'world',
         roam: true,
-        zoomLimit: { max: 8, min: 1 }, // 限制缩放范围
+        zoomLimit: { max: 8, min: 1 },
         center: initialGeoConfig.center,
         zoom: initialGeoConfig.zoom,
         label: {
-          show: false // 隐藏国家标签
+          show: false
         },
         itemStyle: {
-          areaColor: {
-            type: 'linear',
-            x: 0,
-            y: 0,
-            x2: 0,
-            y2: 1,
-            colorStops: [{
-              offset: 0, color: '#1B3A6F' // 海洋深蓝
-            }, {
-              offset: 1, color: '#0A1930' // 深海颜色
-            }]
-          },
-          borderColor: 'rgba(58,139,255,0.3)',
+          areaColor: '#C8E6C9', // 浅绿色地图背景
+          borderColor: '#F4C2C2',
           borderWidth: 0.8
         },
         emphasis: {
           itemStyle: {
-            areaColor: '#2A4F8D', // 高亮国家颜色
-            borderColor: '#3A8BFF',
+            areaColor: '#A5D6A7',
+            borderColor: '#F4C2C2',
             borderWidth: 1.2
           }
         }
       }
     };
 
-
-
     if (myChart) {
       myChart.setOption(option);
     }
 
-    // 获取地图初始状态（延迟确保渲染完成）
     setTimeout(() => {
       if (myChart) {
         const currentOption = myChart.getOption();
@@ -196,28 +269,24 @@ const initChart = async () => {
         console.warn('myChart is null.');
       }
     }, 500);
-    // 添加点击事件监听
 
-    myChart?.on('click', function(params) {
-      if (params.seriesType === 'scatter' && typeof params.data === 'object' && params.data !== null && 'value' in params.data && Array.isArray(params.data.value)) {
-      // 获取点击点的坐标和当前缩放级别
-      const [lng, lat] = params.data.value;
-      const geoOptions = myChart?.getOption()?.geo as Array<{ zoom?: number }> | undefined;
-      const currentZoom = (geoOptions?.[0]?.zoom ?? 1.2);
-
-      // 计算新的中心点和缩放级别
-      myChart?.setOption({
-        geo: [{
-        center: [lng, lat],
-        zoom: Math.min(currentZoom * 1.5, 8) // 限制最大缩放级别为 8
-        }]
-      });
+    // 点击缩放到地震点
+    myChart?.on('click', function (params) {
+      if (params.seriesType === 'scatter' && Array.isArray(params.data?.value)) {
+        const [lng, lat] = params.data.value;
+        const geoOptions = myChart?.getOption()?.geo as Array<{ zoom?: number }> | undefined;
+        const currentZoom = (geoOptions?.[0]?.zoom ?? 1.2);
+        myChart?.setOption({
+          geo: [{
+            center: [lng, lat],
+            zoom: Math.min(currentZoom * 1.5, 8)
+          }]
+        });
       }
     });
 
-    // 右键事件处理（添加类型守卫）
-    myChart?.on('dblclick', function() {
-
+    // 双击重置地图
+    myChart?.on('dblclick', function () {
       if (initialGeoConfig.center && initialGeoConfig.zoom && myChart) {
         myChart.setOption({
           geo: [{
@@ -231,25 +300,8 @@ const initChart = async () => {
       }
     });
 
-
     window.addEventListener('resize', handleResize);
-    // 打印地图注册信息
-    console.log('已注册地图:', echarts.getMap('central_america'));
-    // 3. 调试方法：强制显示所有元素
-    setTimeout(() => {
-          if (myChart) {
-            myChart.dispatchAction({
-              type: 'showTip',
-              seriesIndex: 0,
-              dataIndex: 0
-            });
-          } else {
-            console.warn('myChart is null, cannot dispatch action.');
-          }
-        }, 1000);
 
-    // 验证数据坐标
-    console.log('地震点坐标:', earthquakeData.map(d => [d.lng, d.lat]));
   } catch (error) {
     console.error('Error loading map data:', error);
   }
@@ -281,7 +333,4 @@ onBeforeUnmount(() => {
   height: 500px;
   min-width: 800px;
 }
-
-
 </style>
-
