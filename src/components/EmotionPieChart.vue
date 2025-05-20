@@ -127,11 +127,12 @@ interface ChartClickParams {
 }
 
 // Define emotion types data, including name, initial value, and display color
+// Rearranged in the requested order: Positive, Negative, Neutral, Emergency
 const emotions: EmotionData[] = [
-  { name: 'Positive', value: 0, color: '#f2a1d1' },  // Positive emotion, pink
-  { name: 'Neutral', value: 0, color: '#e87a7a' },   // Neutral emotion, grey
-  { name: 'Emergency', value: 0, color: '#e7e176' }, // Emergency emotion, yellow
-  { name: 'Negative', value: 0, color: '#b5b5b5' },  // Negative emotion, red
+  { name: 'Emergency', value: 0, color: '#f2a1d1' },  // Positive emotion, pink
+  { name: 'Neutral', value: 0, color: '#e87a7a' },  // Negative emotion, red
+  { name: 'Negative', value: 0, color: '#b5b5b5' },   // Neutral emotion, grey
+  { name: 'Positive', value: 0, color: '#e7e176' }, // Emergency emotion, yellow
 ]
 
 // State variables
@@ -329,7 +330,14 @@ const updateChartOptions = (): void => {
         },
         rich: {
           Positive: {
-            color: '#e7e176',
+            color: '#f2a1d1',
+            fontSize: 14,
+            fontWeight: 'bold',
+            padding: [10, 0, 0, 0],
+            align: 'center'
+          },
+          Negative: {
+            color: '#e87a7a',
             fontSize: 14,
             fontWeight: 'bold',
             padding: [10, 0, 0, 0],
@@ -343,14 +351,7 @@ const updateChartOptions = (): void => {
             align: 'center'
           },
           Emergency: {
-            color: '#f2a1d1',
-            fontSize: 14,
-            fontWeight: 'bold',
-            padding: [10, 0, 0, 0],
-            align: 'center'
-          },
-          Negative: {
-            color: '#e87a7a',
+            color: '#e7e176',
             fontSize: 14,
             fontWeight: 'bold',
             padding: [10, 0, 0, 0],
