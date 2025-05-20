@@ -52,12 +52,11 @@
         <h2 class="section-title">舆情情感分析</h2>
         <div class="top-row">
           <div class="emotion-block">
-
-            <EmotionPieChart/>
             <EmotionStackedChart />
+
           </div>
           <div class="frequency-block">
-            <WordCloud />
+            <WordCloud/>
           </div>
         </div>
         <div class="explanation-block">
@@ -65,6 +64,19 @@
         </div>
       </div>
 
+      <div class="map-section sentiment-section">
+        <h2 class="section-title">相关热点分析</h2>
+        <div class="top-row">
+          <div class="emotion-block">
+            <EmotionPieChart/>
+          </div>
+          <div class="frequency-block">
+          </div>
+        </div>
+        <div class="explanation-block">
+          <!-- 下方解释内容 -->
+        </div>
+      </div>
 
     </div>
   </div>

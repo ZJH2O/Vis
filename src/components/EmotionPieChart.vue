@@ -1,6 +1,5 @@
 <template>
   <div class="chart-container">
-    <h1 class="chart-title">情感分析</h1>
     <v-chart class="chart" :option="chartOptions" autoresize @click="handleChartClick" />
 
     <!-- Tweet details modal -->

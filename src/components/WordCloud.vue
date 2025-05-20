@@ -109,7 +109,7 @@ const getOption = ():echarts.EChartsCoreOption => ({
     text: '地震舆情词云分析',
     subtext: `数据时段: ${data.time_blocks[0].block_start} ~ ${data.time_blocks.slice(-1)[0].block_end}`,
     left: 'center',
-    padding:[20,0,0,0],
+    padding:[10,0,0,0],
     textStyle: {
       color: '#2c3e50',
       fontSize: 20,
@@ -140,7 +140,7 @@ const getOption = ():echarts.EChartsCoreOption => ({
   },
   polar: {
     z:0,
-    center: ['50%', '55%'],
+    center: ['50%', '54%'],
     radius: ['66%', '92%'],
     backgroundColor: {
       type: 'angular',
@@ -292,7 +292,7 @@ onMounted( () => {
 
 <style scoped>
 .chart {
-  width: 550x;
+  width: 500x;
   height: 650px;
 }
 
