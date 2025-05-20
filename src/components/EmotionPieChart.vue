@@ -51,10 +51,10 @@ import rawData from '@/assets/enhanced_stats_v3.json'
 
 // 定义情感类型数据，包括名称、初始值和显示颜色
 const emotions = [
-  { name: 'Positive', value: 0, color: '#e7e176' },  // 积极情感，黄色表示
-  { name: 'Negative', value: 0, color: '#e87a7a' },  // 消极情感，红色表示
-  { name: 'Neutral', value: 0, color: '#b5b5b5' },   // 中性情感，灰色表示
-  { name: 'Emergency', value: 0, color: '#f2a1d1' }  // 紧急情感，粉色表示
+  { name: 'Emergency', value: 0, color: '#e7e176' },  // 积极情感，黄色表示
+  { name: 'Neutral', value: 0, color: '#e87a7a' },  // 消极情感，红色表示
+  { name: 'Negative', value: 0, color: '#b5b5b5' },   // 中性情感，灰色表示
+  { name: 'Positive', value: 0, color: '#f2a1d1' }  // 紧急情感，粉色表示
 ]
 
 // 状态变量
