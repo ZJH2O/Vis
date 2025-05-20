@@ -50,10 +50,10 @@ import rawData from '@/assets/enhanced_stats_v3.json'
 
 // 定义情感类型数据，包括名称、初始值和显示颜色
 const emotions = [
-  { name: 'Emergency', value: 0, color: '#e7e176' },  // 积极情感，黄色表示
-  { name: 'Neutral', value: 0, color: '#e87a7a' },  // 消极情感，红色表示
-  { name: 'Negative', value: 0, color: '#b5b5b5' },   // 中性情感，灰色表示
-  { name: 'Positive', value: 0, color: '#f2a1d1' }  // 紧急情感，粉色表示
+  { name: 'Emergency', value: 0, color: '#e7e176' },  // 紧急情感，黄色表示
+  { name: 'Neutral', value: 0, color: '#e87a7a' },  // 中立情感，灰色表示
+  { name: 'Negative', value: 0, color: '#b5b5b5' },   // 消极情感，红色表示
+  { name: 'Positive', value: 0, color: '#f2a1d1' }  // 积极情感，粉色表示
 ]
 
 // 状态变量
@@ -114,7 +114,7 @@ const processData = () => {
         totalLikes: block.total_likes,  // 该时间块的总点赞数
         totalTweets: block.total_tweets,  // 该时间块的总推文数
         hotTweets: block.hot?.tweet_samples || [],  // 热门推文样本，可能不存在
-        othersTweets: block.others?.tweet_samples || [],  // 其他推文样本，可能不存在
+        othersTweets: block.other?.tweet_samples || [],  // 其他推文样本，可能不存在
         emotion: emotion.name,  // 情感类型
         emotionColor: emotion.color,  // 情感类型颜色
         rawBlock: block  // 存储完整的时间块数据以供后续使用
@@ -131,9 +131,9 @@ const generateNestedPieData = (point) => {
 
   const block = point.rawBlock
   const hotCount = block.hot?.total_tweets || 0
-  const othersCount = block.others?.total_tweets || 0
+  const othersCount = block.other?.total_tweets || 0
 
-  // 内环数据：hot vs others
+  // 内环数据：hot vs other
   const innerData = []
   if (hotCount > 0) {
     innerData.push({
@@ -155,8 +155,8 @@ const generateNestedPieData = (point) => {
 
   // 合并热门和其他推文样本
   const allTweets = [
-    ...(block.hot?.tweet_samples || []).map(t => ({ ...t, category: 'Hot' })),
-    ...(block.others?.tweet_samples || []).map(t => ({ ...t, category: 'Others' }))
+    ...(block.hot?.tweet_samples || []).map(t => ({ ...t, category: 'hot' })),
+    ...(block.other?.tweet_samples || []).map(t => ({ ...t, category: 'other' }))
   ]
 
   // 按retweets数量为每个推文分配比例
@@ -165,7 +165,7 @@ const generateNestedPieData = (point) => {
       name: tweet.text.length > 20 ? tweet.text.substring(0, 20) + '...' : tweet.text,
       value: tweet.retweets || 1,  // 确保至少有1的值，避免完全不显示
       itemStyle: {
-        color: tweet.category === 'Hot' ? '#ffb15e' : '#83c5be'  // 基于类别设置颜色
+        color: tweet.category === 'hot' ? '#ffb15e' : '#83c5be'  // 基于类别设置颜色
       },
       // 存储完整推文信息
       tweetInfo: {
