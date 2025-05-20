@@ -56,7 +56,7 @@
 
           </div>
           <div class="frequency-block">
-            <WordCloud/>
+
           </div>
         </div>
         <div class="explanation-block">
@@ -199,6 +199,8 @@ html, body {
   background: white;
   padding: 50px;
   min-height: 400px;
+  max-height: 700px;
+  max-width: 1000px;
 }
 
 /* 响应式调整 */

@@ -165,23 +165,23 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .container {
-  width: 100%;
-  height: 100vh;
-  box-sizing: border-box;
+  width: 500px;
+  height: 500px;
   padding: 10px;
 }
 .charts {
   display: flex;
-  width: 100%;
-  height: 100%;
+  gap: auto;
+  width: 1000px;
+  height: 500px;
 }
 .chart {
   height: 100%;
 }
 .chart-bar {
-  width: 50%;
+  width: 65%;
 }
 .chart-pie {
-  width: 50%;
+  width: 35%;
 }
 </style>
