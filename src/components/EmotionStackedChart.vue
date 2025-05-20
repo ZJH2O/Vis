@@ -2,7 +2,7 @@
   <v-chart class="chart" :option="chartOptions" autoresize />
 </template>
 
-<script setup>
+<script setup lang="js">
 import { ref } from 'vue'
 import { use } from 'echarts/core'
 import VChart from 'vue-echarts'

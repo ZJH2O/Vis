@@ -39,7 +39,7 @@
        <div class="map-section sentiment-section">
         <div class="top-row">
           <div class="emotion-block">
-            <EmotionAnalysis />
+            <EmotionPieChart/>
           </div>
           <div class="frequency-block">
             <WordCloud />
@@ -61,6 +61,7 @@ import ChinaMap from '@/components/ChinaMap.vue'
 import EarthquakeChart from './components/EarthquakeChart.vue';
 import WordCloud from './components/WordCloud.vue';
 import EmotionStackedChart from '@/components/EmotionStackedChart.vue'
+import EmotionPieChart from '@/components/EmotionPieChart.vue'
 
 </script>
 
