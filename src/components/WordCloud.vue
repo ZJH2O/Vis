@@ -140,8 +140,8 @@ const getOption = ():echarts.EChartsCoreOption => ({
   },
   polar: {
     z:0,
-    center: ['50%', '54%'],
-    radius: ['66%', '92%'],
+    center: ['50%', '55%'],
+    radius: ['66%', '88%'],
     backgroundColor: {
       type: 'angular',
       colorStops: [
@@ -293,7 +293,7 @@ onMounted( () => {
 <style scoped>
 .chart {
   width: 500x;
-  height: 650px;
+  height: 600px;
 }
 
 </style>

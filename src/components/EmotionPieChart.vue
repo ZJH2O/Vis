@@ -455,7 +455,7 @@ watch(selectedPoint, () => {
 <style scoped>
 .chart-container {
   width: 100%;
-  padding: 20px;
+  padding: 20px 0;
   font-family: Arial, sans-serif;
   position: relative;
 }
@@ -469,7 +469,7 @@ watch(selectedPoint, () => {
 
 .chart {
   width: 1500px;
-  height: 600px;
+  height: 500px;
 }
 
 /* Tweet details modal styles */

@@ -34,12 +34,12 @@ const initChart = async () => {
 
       tooltip: {
         trigger: "item",
-        backgroundColor: 'rgba(2,28,53,0.9)',
+        backgroundColor: '#ffffff',
         borderColor: '#3FD2E5',
         borderWidth: 1,
         padding: [12, 24],
         textStyle: {
-          color: '#FFF',
+
           fontSize: 14
         },
         formatter: (params: any) => {
@@ -164,15 +164,15 @@ const initChart = async () => {
           show: false
         },
         itemStyle: {
-          areaColor: '#C8E6C9', // 浅绿色地图背景
-          borderColor: '#F4C2C2',
+          areaColor: '#d9d9d9', // 浅绿色地图背景
+          borderColor: '#969696',
           borderWidth: 0.8
         },
         emphasis: {
           itemStyle: {
             areaColor: '#A5D6A7',
-            borderColor: '#F4C2C2',
-            borderWidth: 1.2
+            borderColor: '#ffffff',
+            borderWidth: 1.5
           }
         }
       }

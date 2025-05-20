@@ -78,6 +78,20 @@
         </div>
       </div>
 
+      <div class="map-section sentiment-section">
+        <h2 class="section-title">词频统计分析</h2>
+        <div class="top-row">
+          <div class="emotion-block">
+            <WordCloud/>
+          </div>
+          <div class="frequency-block">
+            <WordBar/>
+          </div>
+        </div>
+        <div class="explanation-block">
+          <!-- 下方解释内容 -->
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -89,7 +103,7 @@ import EarthquakeChart from './components/EarthquakeChart.vue';
 import WordCloud from './components/WordCloud.vue';
 import EmotionStackedChart from '@/components/EmotionStackedChart.vue'
 import EmotionPieChart from '@/components/EmotionPieChart.vue'
-
+import WordBar from './components/WordBar.vue';
 </script>
 
 <style scoped>
