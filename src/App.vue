@@ -5,7 +5,7 @@
       <div class="map-section world-section">
         <div class="top-row">
           <div class="map-block">
-            <!-- <WorldMap /> -->
+            <WorldMap />
           </div>
           <!-- <div class="stats-block">
             <WordCloud/>
@@ -25,7 +25,7 @@
           </div>
           <div class="stats-block">
             <EarthquakeChart />
-            <EmotionStackedChart />
+
             <!-- 右侧统计内容 -->
           </div>
         </div>
@@ -39,7 +39,11 @@
        <div class="map-section sentiment-section">
         <div class="top-row">
           <div class="emotion-block">
+<<<<<<< HEAD
             <EmotionPieChart/>
+=======
+            <EmotionStackedChart />
+>>>>>>> 634f2af4a6086b4a41058667187209574276dcd0
           </div>
           <div class="frequency-block">
             <WordCloud />
@@ -170,7 +174,7 @@ html, body {
 .frequency-block {
   flex: 1;
   background: white;
-  padding: 25px;
+  padding: 50px;
   min-height: 400px;
 }
 
