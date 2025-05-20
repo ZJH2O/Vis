@@ -1,8 +1,19 @@
 <template>
   <div class="background-layer">
     <div class="container">
+
+      <!-- 首页区块 -->
+      <div class="map-section">
+        <div class="top-row">
+          <div class="home-block">
+            <!-- 主视觉内容占位 -->
+          </div>
+        </div>
+      </div>
+
       <!-- 世界地图区块 -->
       <div class="map-section world-section">
+        <h2 class="section-title">全球地震分布</h2>
         <div class="top-row">
           <div class="map-block">
             <WorldMap />
@@ -19,6 +30,7 @@
 
       <!-- 中国地图区块 -->
       <div class="map-section china-section">
+        <h2 class="section-title">中国地震监测</h2>
         <div class="top-row">
           <div class="map-block">
             <ChinaMap />
@@ -37,6 +49,7 @@
 
        <!-- 新增情感分析区块 -->
        <div class="map-section sentiment-section">
+        <h2 class="section-title">舆情情感分析</h2>
         <div class="top-row">
           <div class="emotion-block">
             <EmotionStackedChart />
@@ -127,8 +140,8 @@ html, body {
   position: relative;
   padding: 30px 10px;;
   min-height: 500px;
-  min-width: 80wh;
 }
+
 
 .stats-block {
   flex: 1;
@@ -187,6 +200,51 @@ html, body {
 
   .emotion-block {
     margin-bottom: 15px;
+  }
+}
+
+/* 新增标题样式 */
+.section-title {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.8rem;
+  margin: 60px 0 30px;
+  padding-left: 20px;
+  position: relative;
+}
+
+/* 添加标题装饰线 */
+.section-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 60%;
+  width: 4px;
+  background: #079992;
+  transform: translateY(-50%);
+}
+
+/* 调整区块间距 */
+.map-section {
+  margin: 40px 0;
+  position: relative;
+}
+
+/* 首屏特殊间距 */
+.home-section {
+  margin-top: 20px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 1.5rem;
+    margin: 40px 0 20px;
+  }
+
+  /* 缩小移动端间距 */
+  .map-section {
+    margin: 30px 0;
   }
 }
 </style>
