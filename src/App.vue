@@ -52,6 +52,8 @@
         <h2 class="section-title">舆情情感分析</h2>
         <div class="top-row">
           <div class="emotion-block">
+
+            <EmotionPieChart/>
             <EmotionStackedChart />
           </div>
           <div class="frequency-block">
@@ -74,6 +76,7 @@ import ChinaMap from '@/components/ChinaMap.vue'
 import EarthquakeChart from './components/EarthquakeChart.vue';
 import WordCloud from './components/WordCloud.vue';
 import EmotionStackedChart from '@/components/EmotionStackedChart.vue'
+import EmotionPieChart from '@/components/EmotionPieChart.vue'
 
 </script>
 
