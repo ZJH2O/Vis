@@ -19,7 +19,7 @@
   </div>
 </template>
 
-<script setup lang="js">
+<script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue'
 import { use } from 'echarts/core'
 import VChart from 'vue-echarts'
@@ -32,8 +32,9 @@ import {
   GridComponent,
   ToolboxComponent
 } from 'echarts/components'
+import { EChartsOption, SeriesOption, PieSeriesOption, ScatterSeriesOption } from 'echarts'
 
-// 注册 ECharts 所需组件
+// Register ECharts components
 use([
   CanvasRenderer,
   ScatterChart,
@@ -45,80 +46,156 @@ use([
   ToolboxComponent
 ])
 
-// 导入JSON数据文件
+// Import JSON data file
 import rawData from '@/assets/enhanced_stats_v3.json'
 
-// 定义情感类型数据，包括名称、初始值和显示颜色
-const emotions = [
-  { name: 'Positive', value: 0, color: '#f2a1d1' },  // 积极情感，粉色表示
-  { name: 'Neutral', value: 0, color: '#e87a7a' }, // 中立情感，灰色表示
-  { name: 'Emergency', value: 0, color: '#e7e176' },  // 紧急情感，黄色表示
-  { name: 'Negative', value: 0, color: '#b5b5b5' },   // 消极情感，红色表示
+// Define interfaces for data structures
+interface TweetInfo {
+  id: string;
+  text: string;
+  likes: number;
+  retweets: number;
+  timestamp: string;
+  category?: string;
+}
 
+interface TimeBlock {
+  time_block: string;
+  total_likes: number;
+  total_tweets: number;
+  hot?: {
+    likes: number;
+    retweets: number;
+    tweet_samples: TweetInfo[];
+  };
+  other?: {
+    likes: number;
+    retweets: number;
+    tweet_samples: TweetInfo[];
+  };
+}
+
+interface EmotionData {
+  name: string;
+  value: number;
+  color: string;
+}
+
+interface RawData {
+  emotion_timelines: {
+    [key: string]: TimeBlock[];
+  };
+}
+
+interface ScatterDataPoint {
+  name: string;
+  value: [number, number, number]; // [x, y, size]
+  itemStyle: {
+    color: string;
+    opacity: number;
+  };
+  timeBlock: string;
+  totalLikes: number;
+  totalTweets: number;
+  hotTweets: TweetInfo[];
+  othersTweets: TweetInfo[];
+  emotion: string;
+  emotionColor: string;
+  rawBlock: TimeBlock;
+}
+
+interface PieDataItem {
+  name: string;
+  value: number;
+  itemStyle: {
+    color: string;
+  };
+  tweetInfo?: TweetInfo;
+}
+
+interface PieData {
+  inner: PieDataItem[];
+  outer: PieDataItem[];
+}
+
+interface ChartClickParams {
+  seriesType: string;
+  seriesIndex: number;
+  data: any;
+  percent?: number;
+  dataIndex?: number;
+}
+
+// Define emotion types data, including name, initial value, and display color
+const emotions: EmotionData[] = [
+  { name: 'Positive', value: 0, color: '#f2a1d1' },  // Positive emotion, pink
+  { name: 'Neutral', value: 0, color: '#e87a7a' },   // Neutral emotion, grey
+  { name: 'Emergency', value: 0, color: '#e7e176' }, // Emergency emotion, yellow
+  { name: 'Negative', value: 0, color: '#b5b5b5' },  // Negative emotion, red
 ]
 
-// 状态变量
-const selectedPoint = ref(null)      // 当前选中的散点
-const selectedTweet = ref(null)      // 当前选中的推文
-const chartOptions = ref({})         // 图表配置选项
+// State variables
+const selectedPoint = ref<ScatterDataPoint | null>(null) // Currently selected scatter point
+const selectedTweet = ref<TweetInfo | null>(null)        // Currently selected tweet
+const chartOptions = ref<EChartsOption>({})              // Chart configuration options
 
-// 处理原始数据，计算每种情感的总点赞数并生成散点图数据
-const processData = () => {
-  // 创建结果数组，存储所有生成的数据点
-  const result = []
+// Process raw data, calculate total likes for each emotion type and generate scatter plot data
+const processData = (): ScatterDataPoint[] => {
+  // Create result array to store all generated data points
+  const result: ScatterDataPoint[] = []
 
-  // 遍历每种情感类型
+  // Iterate through each emotion type
   emotions.forEach((emotion, emotionIndex) => {
-    // 获取当前情感类型的所有时间块数据
-    const timeBlocks = rawData.emotion_timelines[emotion.name]
+    // Get all time block data for the current emotion type
+    const timeBlocks = (rawData as RawData).emotion_timelines[emotion.name]
 
-    // 如果该情感类型没有数据，则跳过处理
+    // Skip processing if there is no data for this emotion type
     if (!timeBlocks || !timeBlocks.length) return
 
-    // 计算该情感类型的总点赞数（所有时间块的点赞数总和）
+    // Calculate total likes for this emotion type (sum of likes from all time blocks)
     let totalLikes = 0
     timeBlocks.forEach(block => {
       totalLikes += block.total_likes || 0
     })
 
-    // 更新情感类型的总点赞数值
+    // Update the total likes value for this emotion type
     emotion.value = totalLikes
 
-    // 过滤出点赞数大于等于500的时间块
+    // Filter time blocks with likes greater than or equal to 500
     const filteredTimeBlocks = timeBlocks.filter(block => (block.total_likes || 0) >= 500)
 
-    // 如果过滤后没有数据，则跳过该情感类型
+    // Skip this emotion type if there is no data after filtering
     if (filteredTimeBlocks.length === 0) return
 
-    // 计算x轴的基准位置和步长，确保不同时间块在x轴上均匀分布
-    const baseX = 200  // 不同情感类型的基准x位置
-    const step = 800 / (filteredTimeBlocks.length + 1)  // 同一情感类型内，不同时间块之间的x轴距离
+    // Calculate base position on x-axis and step size to ensure even distribution
+    const baseX = 200  // Base x position for different emotion types
+    const step = 800 / (filteredTimeBlocks.length + 1)  // Distance between time blocks on x-axis
 
-    // 为每个满足条件的时间块创建一个数据点
+    // Create a data point for each qualifying time block
     filteredTimeBlocks.forEach((block, blockIndex) => {
-      // 计算气泡大小，使用较小的气泡尺寸
+      // Calculate bubble size, using a smaller bubble size
       const size = Math.sqrt(block.total_likes) * 0.3 + 1
 
-      // 计算x坐标，使同一情感的不同时间块均匀分布
+      // Calculate x coordinate to evenly distribute time blocks of the same emotion
       const x = baseX + (blockIndex + 1) * step
 
-      // 添加数据点到结果数组
+      // Add data point to result array
       result.push({
-        name: emotion.name,  // 情感类型名称
-        value: [x, 3 - emotionIndex, size],  // [x坐标, y坐标, 气泡大小]
+        name: emotion.name,  // Emotion type name
+        value: [x, 3 - emotionIndex, size],  // [x coordinate, y coordinate, bubble size]
         itemStyle: {
-          color: emotion.color,  // 设置颜色，与情感类型对应
-          opacity: 0.7  // 设置透明度，使重叠的点可见
+          color: emotion.color,  // Set color corresponding to emotion type
+          opacity: 0.7  // Set transparency to make overlapping points visible
         },
-        // 添加额外数据用于悬停提示框显示
-        timeBlock: block.time_block,  // 时间块标识
-        totalLikes: block.total_likes,  // 该时间块的总点赞数
-        totalTweets: block.total_tweets,  // 该时间块的总推文数
-        hotTweets: block.hot?.tweet_samples || [],  // 热门推文样本，可能不存在
-        othersTweets: block.other?.tweet_samples || [],  // 其他推文样本，可能不存在
-        emotion: emotion.name,  // 情感类型
-        emotionColor: emotion.color,  // 情感类型颜色
-        rawBlock: block  // 存储完整的时间块数据以供后续使用
+        // Add additional data for hover tooltip display
+        timeBlock: block.time_block,  // Time block identifier
+        totalLikes: block.total_likes,  // Total likes for this time block
+        totalTweets: block.total_tweets,  // Total tweets for this time block
+        hotTweets: block.hot?.tweet_samples || [],  // Hot tweet samples, may not exist
+        othersTweets: block.other?.tweet_samples || [],  // Other tweet samples, may not exist
+        emotion: emotion.name,  // Emotion type
+        emotionColor: emotion.color,  // Emotion type color
+        rawBlock: block  // Store complete time block data for later use
       })
     })
   })
@@ -126,16 +203,16 @@ const processData = () => {
   return result
 }
 
-// 生成嵌套环图数据
-const generateNestedPieData = (point) => {
+// Generate nested pie chart data
+const generateNestedPieData = (point: ScatterDataPoint | null): PieData => {
   if (!point) return { inner: [], outer: [] }
 
   const block = point.rawBlock
-  const hotCount = block.hot?.likes + block.hot?.retweets || 0
-  const othersCount = block.other?.likes + block.other?.retweets || 0
+  const hotCount = (block.hot?.likes || 0) + (block.hot?.retweets || 0)
+  const othersCount = (block.other?.likes || 0) + (block.other?.retweets || 0)
 
-  // 内环数据：hot vs other
-  const innerData = []
+  // Inner ring data: hot vs other
+  const innerData: PieDataItem[] = []
   if (hotCount > 0) {
     innerData.push({
       name: 'hot',
@@ -151,24 +228,24 @@ const generateNestedPieData = (point) => {
     })
   }
 
-  // 外环数据：各个推文样本，按retweets比例划分
-  const outerData = []
+  // Outer ring data: individual tweet samples, divided by retweets proportion
+  const outerData: PieDataItem[] = []
 
-  // 合并热门和其他推文样本
-  const allTweets = [
+  // Merge hot and other tweet samples
+  const allTweets: (TweetInfo & { category: string })[] = [
     ...(block.hot?.tweet_samples || []).map(t => ({ ...t, category: 'hot' })),
     ...(block.other?.tweet_samples || []).map(t => ({ ...t, category: 'other' }))
   ]
 
-  // 按retweets数量为每个推文分配比例
+  // Allocate proportion based on retweets count for each tweet
   allTweets.forEach(tweet => {
     outerData.push({
       name: tweet.text.length > 20 ? tweet.text.substring(0, 20) + '...' : tweet.text,
-      value: tweet.retweets + tweet.likes || 1,  // 确保至少有1的值，避免完全不显示
+      value: tweet.retweets + tweet.likes || 1,  // Ensure at least a value of 1 to avoid not showing
       itemStyle: {
-        color: tweet.category === 'hot' ? '#ffb15e' : '#83c5be'  // 基于类别设置颜色
+        color: tweet.category === 'hot' ? '#ffb15e' : '#83c5be'  // Set color based on category
       },
-      // 存储完整推文信息
+      // Store complete tweet information
       tweetInfo: {
         id: tweet.id,
         text: tweet.text,
@@ -183,29 +260,29 @@ const generateNestedPieData = (point) => {
   return { inner: innerData, outer: outerData }
 }
 
-// 处理图表点击事件
-const handleChartClick = (params) => {
-  // 如果点击的是散点图的点
+// Handle chart click event
+const handleChartClick = (params: ChartClickParams): void => {
+  // If clicking on a scatter plot point
   if (params.seriesType === 'scatter') {
-    selectedPoint.value = params.data
+    selectedPoint.value = params.data as ScatterDataPoint
     updateChartOptions()
   }
-  // 如果点击的是环图的扇区
+  // If clicking on a pie chart sector
   else if (params.seriesType === 'pie' && params.seriesIndex === 1) {
-    // 点击外环，显示推文详情
+    // Click on outer ring, show tweet details
     selectedTweet.value = params.data.tweetInfo
   }
 }
 
-// 更新图表配置
-const updateChartOptions = () => {
+// Update chart configuration
+const updateChartOptions = (): void => {
   const scatterData = processData()
   const pieData = generateNestedPieData(selectedPoint.value)
 
-  // 配置图表选项
+  // Configure chart options
   chartOptions.value = {
     tooltip: {
-      formatter: function(params) {
+      formatter: function(params: any) {
         if (params.seriesType === 'scatter') {
           return `<div style="font-weight:bold">时间段: ${params.data.timeBlock}</div>` +
                  `情感类型: ${params.data.name}<br/>` +
@@ -225,11 +302,12 @@ const updateChartOptions = () => {
                    `<i>点击查看完整信息</i>`
           }
         }
+        return ''
       }
     },
     grid: {
       left: 180,
-      right: selectedPoint.value ? 450 : 20,  // 如果选中了点，则右侧留出空间显示环图
+      right: selectedPoint.value ? 450 : 20,  // If a point is selected, leave space on the right to display the pie chart
       top: 20,
       bottom: 20
     },
@@ -246,7 +324,7 @@ const updateChartOptions = () => {
       type: 'category',
       data: emotions.map(e => e.name),
       axisLabel: {
-        formatter: function(value, index) {
+        formatter: function(value: string, index: number) {
           return `{${value}|${value}\n${emotions[index].value}}`
         },
         rich: {
@@ -278,11 +356,9 @@ const updateChartOptions = () => {
             padding: [10, 0, 0, 0],
             align: 'center'
           },
-
-
         },
         width: 150,
-        backgroundColor: function(params) {
+        backgroundColor: function(params: { dataIndex: number }) {
           return emotions[params.dataIndex].color;
         },
         borderRadius: 4,
@@ -299,17 +375,17 @@ const updateChartOptions = () => {
     series: [
       {
         type: 'scatter',
-        symbolSize: function (data) {
+        symbolSize: function (data: number[]) {
           return data[2];
         },
         data: scatterData
-      }
+      } as ScatterSeriesOption
     ]
   }
 
-  // 如果有选中的点，添加嵌套环图
+  // If a point is selected, add nested pie chart
   if (selectedPoint.value) {
-    // 添加标题，显示当前选中的时间块和情感类型
+    // Add title to display the current selected time block and emotion type
     chartOptions.value.title = {
       text: `时间段: ${selectedPoint.value.timeBlock} - ${selectedPoint.value.emotion}`,
       subtext: '点击扇区查看推文详情',
@@ -321,8 +397,8 @@ const updateChartOptions = () => {
       }
     }
 
-    // 添加内环（热门 vs 其他）
-    chartOptions.value.series.push({
+    // Add inner ring (hot vs others)
+    chartOptions.value.series?.push({
       name: '分类',
       type: 'pie',
       center: ['80%', '50%'],
@@ -336,10 +412,10 @@ const updateChartOptions = () => {
         borderColor: '#fff'
       },
       data: pieData.inner
-    })
+    } as PieSeriesOption)
 
-    // 添加外环（推文样本）
-    chartOptions.value.series.push({
+    // Add outer ring (tweet samples)
+    chartOptions.value.series?.push({
       name: '推文',
       type: 'pie',
       center: ['80%', '50%'],
@@ -360,16 +436,16 @@ const updateChartOptions = () => {
         borderColor: '#fff'
       },
       data: pieData.outer
-    })
+    } as PieSeriesOption)
   }
 }
 
-// 初始化
+// Initialize
 onMounted(() => {
   updateChartOptions()
 })
 
-// 监听选中点的变化，更新图表
+// Watch for changes in the selected point and update chart
 watch(selectedPoint, () => {
   updateChartOptions()
 })
@@ -395,7 +471,7 @@ watch(selectedPoint, () => {
   height: 600px;
 }
 
-/* 推文详情模态框样式 */
+/* Tweet details modal styles */
 .tweet-modal {
   position: fixed;
   top: 0;
