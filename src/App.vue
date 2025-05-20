@@ -39,11 +39,9 @@
        <div class="map-section sentiment-section">
         <div class="top-row">
           <div class="emotion-block">
-<<<<<<< HEAD
+
             <EmotionPieChart/>
-=======
             <EmotionStackedChart />
->>>>>>> 634f2af4a6086b4a41058667187209574276dcd0
           </div>
           <div class="frequency-block">
             <WordCloud />
