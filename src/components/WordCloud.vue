@@ -85,6 +85,8 @@ const getPolarData = () => {
 
   return data.time_blocks.map(b => ({
     value: getValue(b),
+    word: currentWord.value || '',
+    topWords: b.top_words.slice(0, 3).map(w => w.word).join(', '),
     itemStyle: {
       color: getColor(getValue(b), max),
       opacity: currentWord.value ? 0.8 : 1
@@ -108,7 +110,7 @@ const getOption = ():echarts.EChartsCoreOption => ({
     text: '地震舆情词云分析',
     subtext: `数据时段: ${data.time_blocks[0].block_start} ~ ${data.time_blocks.slice(-1)[0].block_end}`,
     left: 'center',
-    padding:[40,0,0,0],
+    padding:[20,0,0,0],
     textStyle: {
       color: '#2c3e50',
       fontSize: 20,
@@ -128,22 +130,19 @@ const getOption = ():echarts.EChartsCoreOption => ({
         return `${params.name}<br/>词频: ${params.value}`
       }
       if (params.seriesType === 'bar') {
-        const timeBlock = data.time_blocks[params.dataIndex]
-        const isWordSelected = currentWord.value !== null
-        let tip = `${params.name}<br/>${isWordSelected ? '当前词频' : '总词频'}: ${params.value}`
-        if (!isWordSelected) {
-        const topWords = timeBlock.top_words.slice(0, 3).map(w => w.word).join(', ')
-        tip += `<br/>高频词: ${topWords}`
-       }
-       return tip
+        const data = params.data
+        // 根据是否选中词语显示不同内容
+        return data.word
+          ? `词语: ${data.word}<br/>时段: ${params.name}<br/>词频: ${data.value}`
+          : `时段: ${params.name}<br/>总词频: ${data.value}<br/>高频词: ${data.topWords}`
       }
-      return '';
+      return ''
     }
   },
   polar: {
     z:0,
-    center: ['50%', '60%'],
-    radius: ['70%', '92%'],
+    center: ['50%', '55%'],
+    radius: ['66%', '92%'],
     backgroundColor: {
       type: 'angular',
       colorStops: [
@@ -185,7 +184,7 @@ const getOption = ():echarts.EChartsCoreOption => ({
           ],
           global: false // 使用局部坐标系
         },
-        width: 2,        // 轴线宽度
+        width: 3,        // 轴线宽度
         shadowColor: 'rgba(0,0,0,0.1)', // 可选阴影
         shadowBlur: 6
       }
@@ -201,10 +200,10 @@ const getOption = ():echarts.EChartsCoreOption => ({
       type: 'wordCloud',
       shape: 'circle',
       left: 'center',
-      top: '25%',
+      top: '20%',
       width: '70%',
       height: '70%',
-      sizeRange: [12, 62],
+      sizeRange: [14, 64],
       rotationRange: [0, 0],
       gridSize: 8,
       textStyle: {
@@ -270,7 +269,6 @@ onMounted( () => {
         (currentWord.value === params.name ? null : params.name) : null
       currentBlock.value = null
     } else if (params.seriesType === 'bar') {
-
       currentBlock.value = params.name ?
         (currentBlock.value === params.name ? null : params.name) : null
       currentWord.value = null
@@ -295,11 +293,9 @@ onMounted( () => {
 
 <style scoped>
 .chart {
-  width: 550px;
-  height: 650px;
-  background: radial-gradient(circle at 50% 60%,
-    rgba(255,240,150,0.9) 0%,
-    rgba(255,250,200,0.1) 70%);
+  width: 600px;
+  height: 700px;
+
 
 }
 
