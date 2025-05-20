@@ -262,14 +262,15 @@ const generateNestedPieData = (point: ScatterDataPoint | null): PieData => {
 }
 
 // Handle chart click event
+// Handle chart click event
 const handleChartClick = (params: ChartClickParams): void => {
   // If clicking on a scatter plot point
   if (params.seriesType === 'scatter') {
     selectedPoint.value = params.data as ScatterDataPoint
     updateChartOptions()
   }
-  // If clicking on a pie chart sector
-  else if (params.seriesType === 'pie' && params.seriesIndex === 1) {
+  // If clicking on the outer ring of the pie chart (tweet samples)
+  else if (params.seriesType === 'pie' && params.seriesIndex === 2) {
     // Click on outer ring, show tweet details
     selectedTweet.value = params.data.tweetInfo
   }
