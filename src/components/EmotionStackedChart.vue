@@ -17,10 +17,10 @@ const pieChart = ref(null)
 let barInstance, pieInstance
 
 const emotionColors = {
-  Positive: '#2ecc71',
-  Neutral: '#3498db',
-  Emergency: '#e67e22',
-  Negative: '#e74c3c',
+  Positive: '#6dd09a',  // 原生机绿改为薄荷绿
+  Neutral: '#6aaedb',   // 原宝蓝改为浅天蓝
+  Emergency: '#e6996a', // 原警示橙改为杏橙色
+  Negative: '#e88a82',  // 原警示红改为珊瑚粉
 }
 
 const renderBarChart = () => {
@@ -115,7 +115,7 @@ const renderSunburstChart = (stat) => {
 
   const option = {
     title: {
-      text: `情绪构成（旭日图） - ${stat.time_block}`,
+      text: `情绪构成 - ${stat.time_block}`,
       left: 'center',
       top: 10,
       textStyle: { fontSize: 14 }
@@ -166,22 +166,22 @@ onBeforeUnmount(() => {
 <style scoped>
 .container {
   width: 100%;
-  height: 100vh;
-  box-sizing: border-box;
-  padding: 10px;
+  height: 100%;
+  padding: 0 auto;
 }
 .charts {
   display: flex;
-  width: 100%;
-  height: 100%;
+  gap: auto;
+  width: 1280px;
+  height: 500px;
 }
 .chart {
   height: 100%;
 }
 .chart-bar {
-  width: 50%;
+  width: 65%;
 }
 .chart-pie {
-  width: 50%;
+  width: 35%;
 }
 </style>
