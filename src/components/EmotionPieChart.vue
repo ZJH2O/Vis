@@ -130,8 +130,8 @@ interface ChartClickParams {
 // Rearranged in the requested order: Positive, Negative, Neutral, Emergency
 const emotions: EmotionData[] = [
   { name: 'Emergency', value: 0, color: '#f2a1d1' },  // Positive emotion, pink
-  { name: 'Neutral', value: 0, color: '#e87a7a' },  // Negative emotion, red
-  { name: 'Negative', value: 0, color: '#b5b5b5' },   // Neutral emotion, grey
+  { name: 'Negative', value: 0, color: '#e87a7a' },  // Negative emotion, red
+  { name: 'Neutral', value: 0, color: '#b5b5b5' },   // Neutral emotion, grey
   { name: 'Positive', value: 0, color: '#e7e176' }, // Emergency emotion, yellow
 ]
 
@@ -183,7 +183,7 @@ const processData = (): ScatterDataPoint[] => {
       // Add data point to result array
       result.push({
         name: emotion.name,  // Emotion type name
-        value: [x, 3 - emotionIndex, size],  // [x coordinate, y coordinate, bubble size]
+        value: [x, emotionIndex, size],  // [x coordinate, y coordinate, bubble size]
         itemStyle: {
           color: emotion.color,  // Set color corresponding to emotion type
           opacity: 0.7  // Set transparency to make overlapping points visible
@@ -262,14 +262,15 @@ const generateNestedPieData = (point: ScatterDataPoint | null): PieData => {
 }
 
 // Handle chart click event
+// Handle chart click event
 const handleChartClick = (params: ChartClickParams): void => {
   // If clicking on a scatter plot point
   if (params.seriesType === 'scatter') {
     selectedPoint.value = params.data as ScatterDataPoint
     updateChartOptions()
   }
-  // If clicking on a pie chart sector
-  else if (params.seriesType === 'pie' && params.seriesIndex === 1) {
+  // If clicking on the outer ring of the pie chart (tweet samples)
+  else if (params.seriesType === 'pie' && params.seriesIndex === 2) {
     // Click on outer ring, show tweet details
     selectedTweet.value = params.data.tweetInfo
   }
