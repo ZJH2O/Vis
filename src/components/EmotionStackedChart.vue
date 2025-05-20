@@ -16,19 +16,22 @@ const barChart = ref(null)
 const pieChart = ref(null)
 let barInstance, pieInstance
 
+// 柔和色调映射
 const emotionColors = {
-  Positive: '#6dd09a',  // 原生机绿改为薄荷绿
-  Neutral: '#6aaedb',   // 原宝蓝改为浅天蓝
-  Emergency: '#e6996a', // 原警示橙改为杏橙色
-  Negative: '#e88a82',  // 原警示红改为珊瑚粉
+  Positive: '#6dd09a',
+  Neutral: '#6aaedb',
+  Emergency: '#e6996a',
+  Negative: '#e88a82',
 }
+
+// 堆叠顺序（从下到上）
+const orderedEmotions = ['Negative', 'Emergency', 'Neutral', 'Positive']
+const isPositive = (e) => e === 'Positive' || e === 'Neutral'
 
 const renderBarChart = () => {
   const timeBlocks = rawData.statistics.map(s => s.time_block)
-  const emotions = ['Positive', 'Neutral', 'Emergency', 'Negative']
-  const isPositive = (e) => e === 'Positive' || e === 'Neutral'
 
-  const series = emotions.map(emotion => ({
+  const series = orderedEmotions.map(emotion => ({
     name: emotion,
     type: 'bar',
     stack: 'total',
@@ -41,7 +44,7 @@ const renderBarChart = () => {
 
   const option = {
     title: {
-      text: '情绪堆叠图（正：积极/中立，负：紧急/消极）',
+      text: '情绪堆叠图（绿色为积极，顶部堆叠）',
       left: 'center'
     },
     tooltip: {
@@ -58,7 +61,7 @@ const renderBarChart = () => {
     },
     legend: {
       top: 40,
-      data: emotions
+      data: orderedEmotions
     },
     grid: {
       left: '12%',
@@ -72,12 +75,12 @@ const renderBarChart = () => {
       data: timeBlocks,
       axisTick: { show: false },
       axisLine: { show: false },
-      axisLabel: { show: false }  // ✅ 不显示时间标签
+      axisLabel: { show: false }
     },
     yAxis: {
       type: 'value',
-      min: -258,                   // ✅ 指定最小值
-      max: 292,                    // ✅ 指定最大值
+      min: -258,
+      max: 292,
       axisLine: { show: false },
       axisTick: { show: false },
       splitLine: { show: true }
@@ -97,20 +100,30 @@ const renderBarChart = () => {
 }
 
 const renderSunburstChart = (stat) => {
-  const sunburstData = Object.entries(stat.emotions).map(([emotion, details]) => {
-    const emotionColor = emotionColors[emotion] || '#ccc'
-    const children = Object.entries(details)
-      .filter(([key]) => key !== 'total')
-      .map(([sub, value]) => ({
-        name: sub,
+  const sunburstData = []
+  const emotionOrder = ['Positive', 'Neutral', 'Emergency', 'Negative']
+
+  emotionOrder.forEach(emotion => {
+    const details = stat.emotions[emotion]
+    if (!details) return
+    const total = details.total || 0
+    const children = []
+
+    for (const [sub, value] of Object.entries(details)) {
+      if (sub === 'total') continue
+      const percent = ((value / total) * 100).toFixed(1)
+      children.push({
+        name: `${sub} (${percent}%)`,
         value,
-        itemStyle: { color: emotionColor }
-      }))
-    return {
+        itemStyle: { color: emotionColors[emotion] }
+      })
+    }
+
+    sunburstData.push({
       name: emotion,
       children,
-      itemStyle: { color: emotionColor }
-    }
+      itemStyle: { color: emotionColors[emotion] }
+    })
   })
 
   const option = {
@@ -122,7 +135,7 @@ const renderSunburstChart = (stat) => {
     },
     tooltip: {
       trigger: 'item',
-      formatter: '{b}: {c} ({d}%)'
+      formatter: '{b}: {c}'
     },
     series: [
       {
@@ -130,14 +143,33 @@ const renderSunburstChart = (stat) => {
         radius: [0, '90%'],
         center: ['50%', '55%'],
         sort: null,
+        // 不设置 nodeClick 禁用整图点击
         data: sunburstData,
         label: {
-          rotate: 'radial'
+          rotate: 'radial',
+          fontSize: 12
         },
         itemStyle: {
           borderColor: '#fff',
           borderWidth: 1
-        }
+        },
+        levels: [
+          {
+            r0: 0,
+            r: 30,
+            label: {
+              position: 'center',
+              fontSize: 16,
+              color: '#666',
+              formatter: () => 'ESC'
+            },
+            itemStyle: {
+              color: '#f0f0f0'
+            },
+            nodeClick: false // 仅中心圆不可点击
+          },
+          {}, {}, {}, {}
+        ]
       }
     ]
   }
@@ -167,11 +199,11 @@ onBeforeUnmount(() => {
 .container {
   width: 100%;
   height: 100%;
-  padding: 0 auto;
+  display: flex;
+  justify-content: center;
 }
 .charts {
   display: flex;
-  gap: auto;
   width: 1280px;
   height: 500px;
 }
