@@ -50,10 +50,11 @@ import rawData from '@/assets/enhanced_stats_v3.json'
 
 // 定义情感类型数据，包括名称、初始值和显示颜色
 const emotions = [
+  { name: 'Positive', value: 0, color: '#f2a1d1' },  // 积极情感，粉色表示
+  { name: 'Neutral', value: 0, color: '#e87a7a' }, // 中立情感，灰色表示
   { name: 'Emergency', value: 0, color: '#e7e176' },  // 紧急情感，黄色表示
-  { name: 'Neutral', value: 0, color: '#e87a7a' },  // 中立情感，灰色表示
   { name: 'Negative', value: 0, color: '#b5b5b5' },   // 消极情感，红色表示
-  { name: 'Positive', value: 0, color: '#f2a1d1' }  // 积极情感，粉色表示
+
 ]
 
 // 状态变量
@@ -130,8 +131,8 @@ const generateNestedPieData = (point) => {
   if (!point) return { inner: [], outer: [] }
 
   const block = point.rawBlock
-  const hotCount = block.hot?.total_tweets || 0
-  const othersCount = block.other?.total_tweets || 0
+  const hotCount = block.hot?.likes + block.hot?.retweets || 0
+  const othersCount = block.other?.likes + block.other?.retweets || 0
 
   // 内环数据：hot vs other
   const innerData = []
@@ -163,7 +164,7 @@ const generateNestedPieData = (point) => {
   allTweets.forEach(tweet => {
     outerData.push({
       name: tweet.text.length > 20 ? tweet.text.substring(0, 20) + '...' : tweet.text,
-      value: tweet.retweets || 1,  // 确保至少有1的值，避免完全不显示
+      value: tweet.retweets + tweet.likes || 1,  // 确保至少有1的值，避免完全不显示
       itemStyle: {
         color: tweet.category === 'hot' ? '#ffb15e' : '#83c5be'  // 基于类别设置颜色
       },
@@ -212,7 +213,7 @@ const updateChartOptions = () => {
                  `总推文数: ${params.data.totalTweets}<br/>` +
                  `<i>点击查看详细内容</i>`
         } else if (params.seriesType === 'pie') {
-          if (params.seriesIndex === 0) {
+          if (params.seriesIndex === 1) {
             return `<b>${params.data.name}</b><br/>` +
                    `数量: ${params.data.value}<br/>` +
                    `占比: ${params.percent}%`
@@ -256,13 +257,6 @@ const updateChartOptions = () => {
             padding: [10, 0, 0, 0],
             align: 'center'
           },
-          Negative: {
-            color: '#e87a7a',
-            fontSize: 14,
-            fontWeight: 'bold',
-            padding: [10, 0, 0, 0],
-            align: 'center'
-          },
           Neutral: {
             color: '#b5b5b5',
             fontSize: 14,
@@ -276,7 +270,16 @@ const updateChartOptions = () => {
             fontWeight: 'bold',
             padding: [10, 0, 0, 0],
             align: 'center'
-          }
+          },
+          Negative: {
+            color: '#e87a7a',
+            fontSize: 14,
+            fontWeight: 'bold',
+            padding: [10, 0, 0, 0],
+            align: 'center'
+          },
+
+
         },
         width: 150,
         backgroundColor: function(params) {
