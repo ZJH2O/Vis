@@ -130,8 +130,8 @@ interface ChartClickParams {
 // Rearranged in the requested order: Positive, Negative, Neutral, Emergency
 const emotions: EmotionData[] = [
   { name: 'Emergency', value: 0, color: '#f2a1d1' },  // Positive emotion, pink
-  { name: 'Neutral', value: 0, color: '#e87a7a' },  // Negative emotion, red
-  { name: 'Negative', value: 0, color: '#b5b5b5' },   // Neutral emotion, grey
+  { name: 'Negative', value: 0, color: '#e87a7a' },  // Negative emotion, red
+  { name: 'Neutral', value: 0, color: '#b5b5b5' },   // Neutral emotion, grey
   { name: 'Positive', value: 0, color: '#e7e176' }, // Emergency emotion, yellow
 ]
 
@@ -183,7 +183,7 @@ const processData = (): ScatterDataPoint[] => {
       // Add data point to result array
       result.push({
         name: emotion.name,  // Emotion type name
-        value: [x, 3 - emotionIndex, size],  // [x coordinate, y coordinate, bubble size]
+        value: [x, emotionIndex, size],  // [x coordinate, y coordinate, bubble size]
         itemStyle: {
           color: emotion.color,  // Set color corresponding to emotion type
           opacity: 0.7  // Set transparency to make overlapping points visible
