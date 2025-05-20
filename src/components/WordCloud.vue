@@ -17,7 +17,6 @@ import {
 import { LabelLayout } from 'echarts/features'
 import { CanvasRenderer } from 'echarts/renderers'
 import Data from '../assets/word_frequency_analysis_pro.json'
-import { color } from 'echarts'
 // 注册必需组件
 echarts.use([
   BarChart,
@@ -178,7 +177,7 @@ const getOption = ():echarts.EChartsCoreOption => ({
           type: 'angular', // 角度渐变模式
           colorStops: [
             { offset: 0, color: 'hsl(60, 100%, 70%)' },   // 红色
-            { offset: 0.3, color: 'hsl(45, 100%, 60%)' }, // 橙红
+            // { offset: 0.3, color: 'hsl(45, 100%, 60%)' }, // 橙红
             { offset: 1, color: 'hsl(30, 100%, 50%)' }, // 橙色
             { offset: 0.7, color: 'hsl(15, 100%, 50%)' }    // 浅黄
           ],
@@ -293,10 +292,8 @@ onMounted( () => {
 
 <style scoped>
 .chart {
-  width: 600px;
-  height: 700px;
-
-
+  width: 550x;
+  height: 650px;
 }
 
 </style>
