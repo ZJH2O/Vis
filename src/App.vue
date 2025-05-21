@@ -95,7 +95,9 @@
       <div class="map-section sentiment-section">
         <h2 class="section-title">桑基图</h2>
         <div class="top-row">
-
+          <div class="map-block">
+            <SankeyChart/>
+          </div>
         </div>
         <div class="explanation-block">
           <!-- 下方解释内容 -->
@@ -114,6 +116,8 @@ import WordCloud from './components/WordCloud.vue';
 import EmotionStackedChart from '@/components/EmotionStackedChart.vue'
 import EmotionPieChart from '@/components/EmotionPieChart.vue'
 import WordBar from './components/WordBar.vue';
+import SankeyChart from './components/SankeyChart.vue';
+
 </script>
 
 <style scoped>
