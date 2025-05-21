@@ -49,7 +49,7 @@
 
        <!-- 新增情感分析区块 -->
        <div class="map-section sentiment-section">
-        <h2 class="section-title">舆情情感分析</h2>
+        <h2 class="section-title">舆论情感分析</h2>
         <div class="top-row">
           <div class="emotion-block">
             <EmotionStackedChart />
