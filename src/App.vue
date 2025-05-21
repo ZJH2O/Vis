@@ -92,6 +92,16 @@
           <!-- 下方解释内容 -->
         </div>
       </div>
+      <div class="map-section sentiment-section">
+        <h2 class="section-title">桑基图</h2>
+        <div class="top-row">
+
+        </div>
+        <div class="explanation-block">
+          <!-- 下方解释内容 -->
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
