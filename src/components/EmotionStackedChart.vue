@@ -44,7 +44,7 @@ const renderBarChart = () => {
 
   const option = {
     title: {
-      text: '情绪堆叠图（绿色为积极，顶部堆叠）',
+      text: '情绪堆叠图',
       left: 'center'
     },
     tooltip: {
@@ -113,8 +113,9 @@ const renderSunburstChart = (stat) => {
       if (sub === 'total') continue
       const percent = ((value / total) * 100).toFixed(1)
       children.push({
-        name: `${sub} (${percent}%)`,
+        name: `${sub} `,
         value,
+        percent,
         itemStyle: { color: emotionColors[emotion] }
       })
     }
@@ -135,7 +136,7 @@ const renderSunburstChart = (stat) => {
     },
     tooltip: {
       trigger: 'item',
-      formatter: '{b}: {c}'
+      formatter: '{b}: {c} ',
     },
     series: [
       {
@@ -200,7 +201,7 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center;
+
 }
 .charts {
   display: flex;
