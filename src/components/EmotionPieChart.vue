@@ -129,10 +129,10 @@ interface ChartClickParams {
 // Define emotion types data, including name, initial value, and display color
 // Rearranged in the requested order: Positive, Negative, Neutral, Emergency
 const emotions: EmotionData[] = [
-  { name: 'Emergency', value: 0, color: '#f2a1d1' },  // Positive emotion, pink
+  { name: 'Emergency', value: 0, color: '#e7e176' },  // Positive emotion, pink
   { name: 'Negative', value: 0, color: '#e87a7a' },  // Negative emotion, red
   { name: 'Neutral', value: 0, color: '#b5b5b5' },   // Neutral emotion, grey
-  { name: 'Positive', value: 0, color: '#e7e176' }, // Emergency emotion, yellow
+  { name: 'Positive', value: 0, color: '#f2a1d1' }, // Emergency emotion, yellow
 ]
 
 // State variables
