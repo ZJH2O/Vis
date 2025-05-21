@@ -1,15 +1,18 @@
 <template>
   <div class="background-layer">
+    <Homepage />
     <div class="container">
 
+
+
       <!-- 首页区块 -->
-      <div class="map-section">
+      <!-- <div class="map-section">
         <div class="top-row">
           <div class="home-block">
-            <!-- 主视觉内容占位 -->
+            <Homepage />
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- 世界地图区块 -->
       <div class="map-section world-section">
@@ -117,6 +120,7 @@ import EmotionStackedChart from '@/components/EmotionStackedChart.vue'
 import EmotionPieChart from '@/components/EmotionPieChart.vue'
 import WordBar from './components/WordBar.vue';
 import SankeyChart from './components/SankeyChart.vue';
+import Homepage from './components/HomePage.vue'
 
 </script>
 
@@ -143,7 +147,7 @@ html, body {
       rgba(52, 152, 219, 0.2) 30px,  /* 改用半透明青蓝色 */
       rgba(52, 152, 219, 0.2) 32px
     );
-
+  overflow: hidden;
 
 }
 
