@@ -124,20 +124,23 @@ interface ChartClickParams {
   data: any;
   percent?: number;
   dataIndex?: number;
+  componentType?: string;
+  value?: string;
 }
 
 // Define emotion types data, including name, initial value, and display color
 // Rearranged in the requested order: Positive, Negative, Neutral, Emergency
 const emotions: EmotionData[] = [
-  { name: 'Emergency', value: 0, color: '#e7e176' },  // Positive emotion, pink
-  { name: 'Negative', value: 0, color: '#e87a7a' },  // Negative emotion, red
-  { name: 'Neutral', value: 0, color: '#b5b5b5' },   // Neutral emotion, grey
-  { name: 'Positive', value: 0, color: '#f2a1d1' }, // Emergency emotion, yellow
+  { name: 'Emergency', value: 0, color: '#e7e176' },  // Emergency emotion, yellow
+  { name: 'Negative', value: 0, color: '#e87a7a' },   // Negative emotion, red
+  { name: 'Neutral', value: 0, color: '#b5b5b5' },    // Neutral emotion, grey
+  { name: 'Positive', value: 0, color: '#f2a1d1' },   // Positive emotion, pink
 ]
 
 // State variables
 const selectedPoint = ref<ScatterDataPoint | null>(null) // Currently selected scatter point
 const selectedTweet = ref<TweetInfo | null>(null)        // Currently selected tweet
+const selectedEmotion = ref<string | null>(null)         // Currently selected Emotion
 const chartOptions = ref<EChartsOption>({})              // Chart configuration options
 
 // Process raw data, calculate total likes for each emotion type and generate scatter plot data
@@ -149,6 +152,12 @@ const processData = (): ScatterDataPoint[] => {
   emotions.forEach((emotion, emotionIndex) => {
     // Get all time block data for the current emotion type
     const timeBlocks = (rawData as RawData).emotion_timelines[emotion.name]
+    let opacity = 0.7  // Default opacity
+
+    // If a specific emotion is selected, fade out others
+    if (selectedEmotion.value && selectedEmotion.value !== emotion.name) {
+      opacity = 0.05  // Reduce opacity for non-selected emotions
+    }
 
     // Skip processing if there is no data for this emotion type
     if (!timeBlocks || !timeBlocks.length) return
@@ -180,13 +189,21 @@ const processData = (): ScatterDataPoint[] => {
       // Calculate x coordinate to evenly distribute time blocks of the same emotion
       const x = baseX + (blockIndex + 1) * step
 
+      // If a specific point is selected, fade out others
+      let pointOpacity = opacity
+      if (selectedPoint.value &&
+          !(selectedPoint.value.emotion === emotion.name &&
+            selectedPoint.value.timeBlock === block.time_block)) {
+        pointOpacity = 0.05  // Further reduce opacity for non-selected points
+      }
+
       // Add data point to result array
       result.push({
         name: emotion.name,  // Emotion type name
         value: [x, emotionIndex, size],  // [x coordinate, y coordinate, bubble size]
         itemStyle: {
           color: emotion.color,  // Set color corresponding to emotion type
-          opacity: 0.7  // Set transparency to make overlapping points visible
+          opacity: pointOpacity  // Set transparency to make overlapping points visible
         },
         // Add additional data for hover tooltip display
         timeBlock: block.time_block,  // Time block identifier
@@ -241,7 +258,7 @@ const generateNestedPieData = (point: ScatterDataPoint | null): PieData => {
   // Allocate proportion based on retweets count for each tweet
   allTweets.forEach(tweet => {
     outerData.push({
-      name: tweet.text.length > 20 ? tweet.text.substring(0, 20) + '...' : tweet.text,
+      name: tweet.text.length > 10 ? tweet.text.substring(0, 10) + '...' : tweet.text,
       value: tweet.retweets + tweet.likes || 1,  // Ensure at least a value of 1 to avoid not showing
       itemStyle: {
         color: tweet.category === 'hot' ? '#ffb15e' : '#83c5be'  // Set color based on category
@@ -262,10 +279,10 @@ const generateNestedPieData = (point: ScatterDataPoint | null): PieData => {
 }
 
 // Handle chart click event
-// Handle chart click event
 const handleChartClick = (params: ChartClickParams): void => {
   // If clicking on a scatter plot point
   if (params.seriesType === 'scatter') {
+    // Update selected point
     selectedPoint.value = params.data as ScatterDataPoint
     updateChartOptions()
   }
@@ -273,6 +290,18 @@ const handleChartClick = (params: ChartClickParams): void => {
   else if (params.seriesType === 'pie' && params.seriesIndex === 2) {
     // Click on outer ring, show tweet details
     selectedTweet.value = params.data.tweetInfo
+  }
+  // If clicking on y-axis label (emotion categories)
+  else if (params.componentType === 'yAxis') {
+    // Toggle selection: if the same emotion is clicked again, clear the selection
+    if (selectedEmotion.value === params.value) {
+      selectedEmotion.value = null
+    } else {
+      selectedEmotion.value = params.value as string
+      // Clear point selection when switching emotions
+      selectedPoint.value = null
+    }
+    updateChartOptions()
   }
 }
 
@@ -335,33 +364,46 @@ const updateChartOptions = (): void => {
             fontSize: 14,
             fontWeight: 'bold',
             padding: [10, 0, 0, 0],
-            align: 'center'
+            align: 'center',
+            opacity: selectedEmotion.value && selectedEmotion.value !== 'Positive' ? 0.05 : 1
           },
           Negative: {
             color: '#e87a7a',
             fontSize: 14,
             fontWeight: 'bold',
             padding: [10, 0, 0, 0],
-            align: 'center'
+            align: 'center',
+            opacity: selectedEmotion.value && selectedEmotion.value !== 'Negative' ? 0.05 : 1
           },
           Neutral: {
             color: '#b5b5b5',
             fontSize: 14,
             fontWeight: 'bold',
             padding: [10, 0, 0, 0],
-            align: 'center'
+            align: 'center',
+            opacity: selectedEmotion.value && selectedEmotion.value !== 'Neutral' ? 0.05 : 1
           },
           Emergency: {
             color: '#e7e176',
             fontSize: 14,
             fontWeight: 'bold',
             padding: [10, 0, 0, 0],
-            align: 'center'
+            align: 'center',
+            opacity: selectedEmotion.value && selectedEmotion.value !== 'Emergency' ? 0.05 : 1
           },
         },
         width: 150,
-        backgroundColor: function(params: { dataIndex: number }) {
-          return emotions[params.dataIndex].color;
+        backgroundColor: (params: { dataIndex: number }) => {
+        const emotionName = emotions[params.dataIndex].name;
+        // Apply transparency to background color if not selected
+        const alpha = selectedEmotion.value && selectedEmotion.value !== emotionName ? 0.05 : 1;
+        const color = emotions[params.dataIndex].color;
+
+        // Convert hex color to rgba with transparency
+        const r = parseInt(color.slice(1, 3), 16);
+        const g = parseInt(color.slice(3, 5), 16);
+        const b = parseInt(color.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         },
         borderRadius: 4,
         padding: [10, 0, 10, 0],
@@ -372,7 +414,8 @@ const updateChartOptions = (): void => {
       },
       axisLine: { show: false },
       axisTick: { show: false },
-      splitLine: { show: false }
+      splitLine: { show: false },
+      triggerEvent: true  // Important: This allows clicking on y-axis labels
     },
     series: [
       {
@@ -449,6 +492,11 @@ onMounted(() => {
 
 // Watch for changes in the selected point and update chart
 watch(selectedPoint, () => {
+  updateChartOptions()
+})
+
+// Watch for changes in the selected emotion and update chart
+watch(selectedEmotion, () => {
   updateChartOptions()
 })
 </script>
