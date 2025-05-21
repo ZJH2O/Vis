@@ -365,7 +365,7 @@ const updateChartOptions = (): void => {
             fontWeight: 'bold',
             padding: [10, 0, 0, 0],
             align: 'center',
-            opacity: selectedEmotion.value && selectedEmotion.value !== 'Positive' ? 0.3 : 1
+            opacity: selectedEmotion.value && selectedEmotion.value !== 'Positive' ? 0.05 : 1
           },
           Negative: {
             color: '#e87a7a',
@@ -373,7 +373,7 @@ const updateChartOptions = (): void => {
             fontWeight: 'bold',
             padding: [10, 0, 0, 0],
             align: 'center',
-            opacity: selectedEmotion.value && selectedEmotion.value !== 'Negative' ? 0.3 : 1
+            opacity: selectedEmotion.value && selectedEmotion.value !== 'Negative' ? 0.05 : 1
           },
           Neutral: {
             color: '#b5b5b5',
@@ -381,7 +381,7 @@ const updateChartOptions = (): void => {
             fontWeight: 'bold',
             padding: [10, 0, 0, 0],
             align: 'center',
-            opacity: selectedEmotion.value && selectedEmotion.value !== 'Neutral' ? 0.3 : 1
+            opacity: selectedEmotion.value && selectedEmotion.value !== 'Neutral' ? 0.05 : 1
           },
           Emergency: {
             color: '#e7e176',
@@ -389,14 +389,14 @@ const updateChartOptions = (): void => {
             fontWeight: 'bold',
             padding: [10, 0, 0, 0],
             align: 'center',
-            opacity: selectedEmotion.value && selectedEmotion.value !== 'Emergency' ? 0.3 : 1
+            opacity: selectedEmotion.value && selectedEmotion.value !== 'Emergency' ? 0.05 : 1
           },
         },
         width: 150,
         backgroundColor: (params: { dataIndex: number }) => {
         const emotionName = emotions[params.dataIndex].name;
         // Apply transparency to background color if not selected
-        const alpha = selectedEmotion.value && selectedEmotion.value !== emotionName ? 0.3 : 1;
+        const alpha = selectedEmotion.value && selectedEmotion.value !== emotionName ? 0.05 : 1;
         const color = emotions[params.dataIndex].color;
 
         // Convert hex color to rgba with transparency
