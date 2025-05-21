@@ -1,0 +1,200 @@
+{
+  "metadata": {
+    "total_tweets": 29185,
+    "main_categories": [
+      "Positive",
+      "Negative",
+      "Neutral",
+      "Emergency"
+    ],
+    "generated_at": "2025-05-18T15:54:11.059327"
+  },
+  "nodes": [
+    {
+      "name": "Total",
+      "category": "root"
+    },
+    {
+      "name": "Positive",
+      "category": "main",
+      "count": 11028
+    },
+    {
+      "name": "Positive_Hope",
+      "category": "sub",
+      "count": 3054
+    },
+    {
+      "name": "Positive_General",
+      "category": "sub",
+      "count": 6807
+    },
+    {
+      "name": "Positive_Gratitude",
+      "category": "sub",
+      "count": 508
+    },
+    {
+      "name": "Positive_Solidarity",
+      "category": "sub",
+      "count": 659
+    },
+    {
+      "name": "Negative",
+      "category": "main",
+      "count": 8746
+    },
+    {
+      "name": "Negative_General",
+      "category": "sub",
+      "count": 7831
+    },
+    {
+      "name": "Negative_Sorrow",
+      "category": "sub",
+      "count": 866
+    },
+    {
+      "name": "Negative_Fear",
+      "category": "sub",
+      "count": 27
+    },
+    {
+      "name": "Negative_Anger",
+      "category": "sub",
+      "count": 22
+    },
+    {
+      "name": "Neutral",
+      "category": "main",
+      "count": 3890
+    },
+    {
+      "name": "Neutral_Undefined",
+      "category": "sub",
+      "count": 3411
+    },
+    {
+      "name": "Neutral_Question",
+      "category": "sub",
+      "count": 300
+    },
+    {
+      "name": "Neutral_General",
+      "category": "sub",
+      "count": 179
+    },
+    {
+      "name": "Emergency",
+      "category": "main",
+      "count": 5521
+    },
+    {
+      "name": "Emergency_Rescue",
+      "category": "sub",
+      "count": 3081
+    },
+    {
+      "name": "Emergency_Medical",
+      "category": "sub",
+      "count": 978
+    },
+    {
+      "name": "Emergency_Damage",
+      "category": "sub",
+      "count": 1462
+    }
+  ],
+  "links": [
+    {
+      "source": "Total",
+      "target": "Positive",
+      "value": 11028
+    },
+    {
+      "source": "Positive",
+      "target": "Positive_Hope",
+      "value": 3054
+    },
+    {
+      "source": "Positive",
+      "target": "Positive_General",
+      "value": 6807
+    },
+    {
+      "source": "Positive",
+      "target": "Positive_Gratitude",
+      "value": 508
+    },
+    {
+      "source": "Positive",
+      "target": "Positive_Solidarity",
+      "value": 659
+    },
+    {
+      "source": "Total",
+      "target": "Negative",
+      "value": 8746
+    },
+    {
+      "source": "Negative",
+      "target": "Negative_General",
+      "value": 7831
+    },
+    {
+      "source": "Negative",
+      "target": "Negative_Sorrow",
+      "value": 866
+    },
+    {
+      "source": "Negative",
+      "target": "Negative_Fear",
+      "value": 27
+    },
+    {
+      "source": "Negative",
+      "target": "Negative_Anger",
+      "value": 22
+    },
+    {
+      "source": "Total",
+      "target": "Neutral",
+      "value": 3890
+    },
+    {
+      "source": "Neutral",
+      "target": "Neutral_Undefined",
+      "value": 3411
+    },
+    {
+      "source": "Neutral",
+      "target": "Neutral_Question",
+      "value": 300
+    },
+    {
+      "source": "Neutral",
+      "target": "Neutral_General",
+      "value": 179
+    },
+    {
+      "source": "Total",
+      "target": "Emergency",
+      "value": 5521
+    },
+    {
+      "source": "Emergency",
+      "target": "Emergency_Rescue",
+      "value": 3081
+    },
+    {
+      "source": "Emergency",
+      "target": "Emergency_Medical",
+      "value": 978
+    },
+    {
+      "source": "Emergency",
+      "target": "Emergency_Damage",
+      "value": 1462
+    }
+  ]
+}
