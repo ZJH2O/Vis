@@ -1,17 +1,13 @@
 <template>
   <div class="parallax-container">
-    <!-- 视差滚动层 -->
     <div
       class="parallax-layer layer3"
-      :style="`transform: translateY(${scrollPosition *0}px)`"
     ></div>
     <div
       class="parallax-layer layer2"
-      :style="`transform: translateY(${scrollPosition*0 }px)`"
     ></div>
     <div
       class="parallax-layer layer1"
-      :style="`transform: translateY(${scrollPosition*0 }px)`"
     ></div>
 
     <!-- 艺术字标题 -->
@@ -23,21 +19,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
 
-const scrollPosition = ref(0);
 
-const handleScroll = () => {
-  scrollPosition.value = window.scrollY;
-};
 
-onMounted(() => {
-  window.addEventListener('scroll', handleScroll);
-});
 
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll);
-});
+
 </script>
 
 <style scoped>
@@ -79,9 +65,11 @@ onUnmounted(() => {
 .layer3 {
   background-image: url('@/assets/img/3.jpg');
   z-index: 1;
-  transform: scale(1.1);
   filter: grayscale(80%);
 }
+
+
+
 
 .title-container {
   position: fixed;

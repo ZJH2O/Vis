@@ -237,7 +237,8 @@ html, body {
 }
 .background-layer {
   position: absolute;
-  top: 0;
+  top: 70px;
+  /* top: 0; */
   left: 0;
   width: 100%;
   min-height: 100%;
@@ -300,8 +301,7 @@ html, body {
 .stats-block {
   flex: 1;
   padding: 20px 40px;
-  background: #f8f9fa;
-  border-left: 1px solid #eee;
+  background: #ffffff;
 }
 
 
