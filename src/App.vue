@@ -119,7 +119,7 @@
         </div>
       </div>
       <div class="map-section sentiment-section" ref="sankey" id="sankey">
-        <h2 class="section-title">桑基图</h2>
+        <h2 class="section-title">桑基图分析</h2>
         <div class="top-row">
           <div class="map-block">
             <SankeyChart/>
@@ -129,7 +129,8 @@
           <!-- 下方解释内容 -->
         </div>
       </div>
-      <div class="footer-section">
+      <div class="footer-section" ref="co" id="co">
+        <h2 class="section-title">团队合作</h2>
           <AppFooter />
       </div>
 
@@ -158,7 +159,8 @@ const sections = [
   { id: 'sentiment-analysis', title: '舆论情感分析' },
   { id: 'hot-analysis', title: '相关热点分析' },
   { id: 'word-frequency', title: '词频统计分析' },
-  { id: 'sankey', title: '桑基图分析' }
+  { id: 'sankey', title: '桑基图分析' },
+  { id: 'co', title: '团队合作'}
 ];
 
 // 当前活动区块

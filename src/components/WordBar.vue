@@ -67,6 +67,31 @@ const colorPalette = [
   '#B5B5B5'  // Negative
 ]
 
+// 颜色映射逻辑
+const getHSLColor = (count: number, maxCount: number) => {
+  // 计算比例（0-1之间）
+  const ratio = count / maxCount;
+
+  // 根据比例在HSL色系中插值
+  if (ratio <= 0.3) {
+    // 在0-0.3区间：深红(15°)到橙红(30°)
+    const t = ratio / 0.3;
+    const h = 15 + t * 15; // 15° → 30°
+    return `hsl(${h}, 100%, 50%)`;
+  } else if (ratio <= 0.7) {
+    // 在0.3-0.7区间：橙红(30°)到橙色(45°)
+    const t = (ratio - 0.3) / 0.4;
+    const h = 30 + t * 15; // 30° → 45°
+    return `hsl(${h}, 100%, 55%)`;
+  } else {
+    // 在0.7-1.0区间：橙色(45°)到浅黄(60°)
+    const t = (ratio - 0.7) / 0.3;
+    const h = 45 + t * 15; // 45° → 60°
+    const l = 55 + t * 15; // 55% → 70%
+    return `hsl(${h}, 100%, ${l}%)`;
+  }
+};
+
 // 响应式变量
 const chartDom = ref<HTMLElement>()
 const chartInstance = ref<echarts.ECharts>()
@@ -180,7 +205,7 @@ const updateData = () => {
 
   const currentData = timeSeries[currentIndex.value]
   const words = currentData.words
-
+  const maxCount = Math.max(...words.map(w => w.count))
 
   chartInstance.value.setOption({
     title: {
@@ -193,7 +218,10 @@ const updateData = () => {
       data: currentData.words.map(w => ({
         value: w.count,
         name: w.word,
-        time: currentData.time
+        time: currentData.time,
+        itemStyle: {
+          color: getHSLColor(w.count, maxCount) // 动态计算HSL颜色
+        }
       }))
     }]
   })
