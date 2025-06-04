@@ -164,9 +164,6 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   min-height: 500px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   padding: 15px;
 }
 

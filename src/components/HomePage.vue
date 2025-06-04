@@ -3,15 +3,15 @@
     <!-- 视差滚动层 -->
     <div
       class="parallax-layer layer3"
-      :style="`transform: translateY(${scrollPosition * 0.6}px)`"
+      :style="`transform: translateY(${scrollPosition *0}px)`"
     ></div>
     <div
       class="parallax-layer layer2"
-      :style="`transform: translateY(${scrollPosition * 0.4}px)`"
+      :style="`transform: translateY(${scrollPosition*0 }px)`"
     ></div>
     <div
       class="parallax-layer layer1"
-      :style="`transform: translateY(${scrollPosition * 0.2}px)`"
+      :style="`transform: translateY(${scrollPosition*0 }px)`"
     ></div>
 
     <!-- 艺术字标题 -->
