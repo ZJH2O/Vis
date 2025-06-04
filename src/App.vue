@@ -129,22 +129,27 @@
           <!-- 下方解释内容 -->
         </div>
       </div>
+      <div class="footer-section">
+          <AppFooter />
+      </div>
 
     </div>
+
   </div>
 </template>
 
 <script setup lang="ts">
-import WorldMap from '@/components/WorldMap.vue'
-import ChinaMap from '@/components/ChinaMap.vue'
+import WorldMap from './components/WorldMap.vue'
+import ChinaMap from './components/ChinaMap.vue'
 import EarthquakeChart from './components/EarthquakeChart.vue';
 import WordCloud from './components/WordCloud.vue';
-import EmotionStackedChart from '@/components/EmotionStackedChart.vue'
-import EmotionPieChart from '@/components/EmotionPieChart.vue'
+import EmotionStackedChart from './components/EmotionStackedChart.vue'
+import EmotionPieChart from './components/EmotionPieChart.vue'
 import WordBar from './components/WordBar.vue';
 import SankeyChart from './components/SankeyChart.vue';
 import Homepage from './components/HomePage.vue'
 import { onBeforeUnmount, onMounted, ref } from 'vue';
+import AppFooter from './components/AppFooter.vue';
 
 // 定义导航栏结构
 const sections = [
@@ -251,7 +256,7 @@ html, body {
       -15deg,
       transparent,
       transparent 30px,
-      rgba(52, 152, 219, 0.2) 30px,  /* 改用半透明青蓝色 */
+      rgba(52, 77, 219, 0.215) 30px,  /* 改用半透明青蓝色 */
       rgba(52, 152, 219, 0.2) 32px
     );
   overflow: auto;
@@ -281,6 +286,12 @@ html, body {
 
   padding: 20px auto;
   border-radius: 8px;
+}
+
+/* 新增底部区域样式 */
+.footer-section {
+  margin-top: 60px;
+  padding: 30px 0;
 }
 
 .top-row {
@@ -401,6 +412,12 @@ html, body {
   /* 缩小移动端间距 */
   .map-section {
     margin: 30px 0;
+  }
+
+    /* 移动端底部调整 */
+  .footer-section {
+    margin-top: 30px;
+    padding: 20px 0;
   }
 }
 
