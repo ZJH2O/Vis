@@ -106,8 +106,12 @@
           <!-- 下方解释内容 -->
         </div>
       </div>
+      <div class="footer-section">
+          <AppFooter />
+      </div>
 
     </div>
+
   </div>
 </template>
 
@@ -121,6 +125,7 @@ import EmotionPieChart from '@/components/EmotionPieChart.vue'
 import WordBar from './components/WordBar.vue';
 import SankeyChart from './components/SankeyChart.vue';
 import Homepage from './components/HomePage.vue'
+import AppFooter from './components/AppFooter.vue';
 
 </script>
 
@@ -144,7 +149,7 @@ html, body {
       -15deg,
       transparent,
       transparent 30px,
-      rgba(52, 152, 219, 0.2) 30px,  /* 改用半透明青蓝色 */
+      rgba(52, 77, 219, 0.215) 30px,  /* 改用半透明青蓝色 */
       rgba(52, 152, 219, 0.2) 32px
     );
   overflow: hidden;
@@ -173,6 +178,12 @@ html, body {
 
   padding: 20px auto;
   border-radius: 8px;
+}
+
+/* 新增底部区域样式 */
+.footer-section {
+  margin-top: 60px;
+  padding: 30px 0;
 }
 
 .top-row {
@@ -295,7 +306,14 @@ html, body {
   .map-section {
     margin: 30px 0;
   }
+
+    /* 移动端底部调整 */
+  .footer-section {
+    margin-top: 30px;
+    padding: 20px 0;
+  }
 }
+
 </style>
 
 
