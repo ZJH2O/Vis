@@ -1,18 +1,33 @@
 <!-- //component/WorldMap.vue -->
 <template>
-  <div ref="chartContainer" class="world-chart-container"></div>
+  <div class="world-chart-wrapper">
+    <div ref="chartContainer" class="world-chart-container">
+      <!-- echarts 图表会在这里渲染 -->
+    </div>
+    <button
+      ref="resetBtn"
+      class="reset-btn"
+      @click="resetChart"
+    >
+      重置视图
+    </button>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import * as echarts from 'echarts/core';
 import type { ECharts } from 'echarts/core';
-import worldearthquakeData from '@/assets/WorldEarthquakes.json'; // 替换为你的数据文件路径
+import worldearthquakeData from '@/assets/WorldEarthquakes.json';
 
 const chartContainer = ref(null);
+const resetBtn = ref(null);
 let myChart: ECharts | null = null;
+let hasClicked = ref(false); // 用户是否点击过地图
+let canDrag = ref(false); // 控制是否允许拖动
+let initialGeoConfig = { center: [0, 0], zoom: 1.2 }; // 保存初始状态
+let originalOption: any = null; // 保存原始配置
 
-// 模拟地震数据（替换成你的真实数据）
 const earthquakeData = worldearthquakeData.map(item => ({
   lng: item.lng,
   lat: item.lat,
@@ -21,17 +36,13 @@ const earthquakeData = worldearthquakeData.map(item => ({
   time: item.year,
 }));
 
-let initialGeoConfig = { center: [0, 0], zoom: 1.2 }; // 保存初始状态
-
 const initChart = async () => {
   try {
-    // 加载地图数据
     const response = await fetch("https://img.isqqw.com/profile/upload/2025/03/11/b90bf3d4-6c6f-4ef1-acd1-4edd925acaed.json");
     const worldJson = await response.json();
     echarts.registerMap('world', worldJson);
 
     const option = {
-
       tooltip: {
         trigger: "item",
         backgroundColor: '#ffffff',
@@ -39,7 +50,6 @@ const initChart = async () => {
         borderWidth: 1,
         padding: [12, 24],
         textStyle: {
-
           fontSize: 14
         },
         formatter: (params: any) => {
@@ -62,8 +72,8 @@ const initChart = async () => {
           type: 'continuous',
           min: 7,
           max: 9,
-          dimension: 2, // 震级在第2维
-          seriesIndex: 0, // 震级图层
+          dimension: 2,
+          seriesIndex: 0,
           text: ['9级', '7级'],
           inRange: {
             symbolSize: [12, 30]
@@ -77,8 +87,8 @@ const initChart = async () => {
           type: 'continuous',
           min: 0,
           max: 700,
-          dimension: 3, // 深度在第3维
-          seriesIndex: 1, // 深度图层
+          dimension: 3,
+          seriesIndex: 1,
           text: ['深源', '浅源'],
           inRange: {
             color: ['#FF6B6B', '#FFD700']
@@ -156,15 +166,15 @@ const initChart = async () => {
       ],
       geo: {
         map: 'world',
-        roam: true,
-        zoomLimit: { max: 8, min: 1 },
+        roam: false, // 初始禁用所有漫游功能
+        zoomLimit: { max: 8, min: initialGeoConfig.zoom },
         center: initialGeoConfig.center,
         zoom: initialGeoConfig.zoom,
         label: {
           show: false
         },
         itemStyle: {
-          areaColor: '#d9d9d9', // 浅绿色地图背景
+          areaColor: '#d9d9d9',
           borderColor: '#969696',
           borderWidth: 0.8
         },
@@ -179,6 +189,8 @@ const initChart = async () => {
     };
 
     if (myChart) {
+      // 保存原始配置
+      originalOption = JSON.parse(JSON.stringify(option));
       myChart.setOption(option);
     }
 
@@ -199,12 +211,24 @@ const initChart = async () => {
       }
     }, 500);
 
+    // 点击地图后允许缩放
+    myChart?.on('click', function (params) {
+      hasClicked.value = true;
+
+      // 允许缩放但不允许拖动
+      myChart?.setOption({
+        geo: {
+          roam: 'scale'
+        }
+      });
+    });
+
     // 点击缩放到地震点
     myChart?.on('click', function (params) {
       if (params.seriesType === 'scatter' && Array.isArray(params.data?.value)) {
         const [lng, lat] = params.data.value;
         const geoOptions = myChart?.getOption()?.geo as Array<{ zoom?: number }> | undefined;
-        const currentZoom = (geoOptions?.[0]?.zoom ?? 1.2);
+        const currentZoom = (geoOptions?.[0]?.zoom ?? initialGeoConfig.zoom);
         myChart?.setOption({
           geo: [{
             center: [lng, lat],
@@ -216,23 +240,49 @@ const initChart = async () => {
 
     // 双击重置地图
     myChart?.on('dblclick', function () {
-      if (initialGeoConfig.center && initialGeoConfig.zoom && myChart) {
-        myChart.setOption({
-          geo: [{
-            center: initialGeoConfig.center,
-            zoom: initialGeoConfig.zoom
-          }],
-          animationDuration: 1000
-        });
-      } else {
-        console.warn('初始地图配置未正确初始化或 myChart 为 null');
-      }
+      resetChart();
+    });
+
+    // 监听地图缩放事件
+    myChart?.on('georoam', function () {
+      if (!hasClicked.value) return;
+
+      const geoOption = myChart?.getOption().geo[0];
+      const currentZoom = geoOption.zoom;
+
+      // 缩放比例大于初始值时允许拖动，否则只允许缩放
+      canDrag.value = currentZoom > initialGeoConfig.zoom;
+      myChart?.setOption({
+        geo: {
+          roam: canDrag.value ? true : 'scale'
+        }
+      });
     });
 
     window.addEventListener('resize', handleResize);
-
   } catch (error) {
     console.error('Error loading map data:', error);
+  }
+};
+
+// 重置图表到初始状态
+const resetChart = () => {
+  if (myChart && originalOption) {
+    // 重置为原始配置
+    myChart.setOption(originalOption);
+
+    // 重置交互状态
+    hasClicked.value = false;
+    canDrag.value = false;
+
+    // 添加动画效果
+    myChart.setOption({
+      geo: {
+        animation: true,
+        animationDuration: 500,
+        animationEasing: 'cubicOut'
+      }
+    });
   }
 };
 
@@ -257,9 +307,38 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+.world-chart-wrapper {
+  position: relative;
+}
+
 .world-chart-container {
   width: 100%;
   height: 700px;
   min-width: 800px;
+}
+
+.reset-btn {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  padding: 8px 16px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 10; /* 确保按钮位于 canvas 之上 */
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+}
+
+.reset-btn:hover {
+  background-color: rgba(240, 240, 240, 0.9);
+  transform: translateY(-2px);
+}
+
+.reset-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 </style>

@@ -17,6 +17,15 @@
         </li>
       </ul>
     </div>
+
+        <div class="respositories-section">
+      <h3>代码仓库</h3>
+      <ul>
+        <li v-for="(link, index) in respositoryLink" :key="index">
+          <a :href="link.url" target="_blank">{{ link.name }}</a>
+        </li>
+      </ul>
+    </div>
   </footer>
 </template>
 
@@ -39,7 +48,11 @@ export default defineComponent({
       { name: '国家地震科学数据中心', url: 'https://data.earthquake.cn/index.html' }
     ];
 
-    return { teamMembers, friendlyLinks };
+    const respositoryLink = [
+      { name: 'GitHub', url: 'https://github.com/ZJH2O/Vis'}
+    ];
+
+    return { teamMembers, friendlyLinks, respositoryLink };
   }
 });
 </script>
