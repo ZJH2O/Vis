@@ -89,6 +89,8 @@
           <div class="emotion-block">
             <EmotionStackedChart />
           </div>
+          <div class="stats-block">
+          </div>
         </div>
         <div class="explanation-block">
           <p style="color: black; padding: 15px; border-radius: 8px;">
@@ -107,6 +109,8 @@
         <div class="top-row">
           <div class="emotion-block">
             <EmotionPieChart />
+          </div>
+          <div class="stats-block">
           </div>
         </div>
         <div class="explanation-block">
@@ -345,7 +349,7 @@ html, body {
 }
 
 .explanation-block {
-  height: auto;
+  height: 200px;
   padding: 15px;
   background: #f1f3f5;
   border-top: 1px solid #eee;
@@ -443,6 +447,243 @@ html, body {
   .footer-section {
     margin-top: 30px;
     padding: 20px 0;
+  }
+}
+/* 轴状侧边导航栏样式 */
+.scroll-nav.axis-nav {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.7); /* 半透明白色背景 */
+  backdrop-filter: blur(10px); /* 磨砂模糊效果 */
+  border-radius: 15px;
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.axis-nav .axis-container {
+  position: relative;
+  display: flex;
+}
+
+/* .axis-nav .axis-line {
+  position: absolute;
+  left: 30px;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: linear-gradient(to bottom,
+    rgba(121, 216, 232, 0.3),
+    rgba(7, 153, 146, 0.6),
+    rgba(121, 216, 232, 0.3));
+  border-radius: 2px;
+  z-index: 1;
+} */
+
+.axis-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.axis-nav li {
+  margin: 18px 0;
+  position: relative;
+}
+
+.axis-nav a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  padding: 10px 15px 10px 45px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.axis-nav a .number {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(7, 153, 146, 0.3);
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.axis-nav a .title {
+  flex: 1;
+  transition: all 0.3s ease;
+}
+
+.axis-nav a:hover {
+  background: rgba(7, 153, 146, 0.25);
+  color: white;
+}
+
+/* 当前激活区域样式 */
+.axis-nav a.active {
+  background: #079992;
+  color: white;
+  box-shadow: 0 0 15px rgba(7, 153, 146, 0.5);
+}
+
+.axis-nav a.active .number {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* 已访问区块 */
+.axis-nav a.completed:not(.active) {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.axis-nav a.completed:not(.active) .number {
+  background: rgba(121, 216, 232, 0.5);
+}
+
+/* 轴指示器效果 */
+.axis-nav a.active::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 80%;
+  width: 5px;
+  background: #79d8e8;
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 0 10px #79d8e8;
+  animation: axis-pulse 1.5s infinite;
+}
+
+@keyframes axis-pulse {
+  0% {
+    opacity: 0.7;
+    box-shadow: 0 0 5px #79d8e8;
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 15px #79d8e8;
+  }
+  100% {
+    opacity: 0.7;
+    box-shadow: 0 0 5px #79d8e8;
+  }
+}
+
+/* 响应式设计 - 在小屏幕上隐藏导航栏 */
+@media (max-width: 992px) {
+  .axis-nav {
+    display: none;
+  }
+}
+
+/* 磨砂白玻璃导航栏 */
+.frosted-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  z-index: 1000;
+
+  /* 半透明磨砂白玻璃效果 */
+  background: rgba(255, 255, 255, 0.7); /* 半透明白色背景 */
+  backdrop-filter: blur(10px); /* 磨砂模糊效果 */
+  -webkit-backdrop-filter: blur(10px); /* 兼容Safari */
+
+  /* 边框和阴影增强效果 */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav-logo {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #0a3d62;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li {
+  margin: 0 15px;
+}
+
+.nav-links a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #0a3d62;
+  font-weight: 500;
+  padding: 8px 15px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+}
+
+.nav-links a:hover {
+  background: rgba(7, 153, 146, 0.15);
+}
+
+.nav-links a.active {
+  background: rgba(7, 153, 146, 0.25);
+  color: #0a3d62;
+}
+
+.nav-number {
+  background: rgba(7, 153, 146, 0.2);
+  color: #0a3d62;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  margin-right: 8px;
+  font-size: 0.85rem;
+}
+
+/* 响应式设计 */
+@media (max-width: 992px) {
+  .frosted-navbar {
+    padding: 0 20px;
+  }
+
+  .nav-links a .nav-title {
+    display: none;
+  }
+
+  .nav-links a {
+    padding: 8px;
   }
 }
 </style>
