@@ -127,21 +127,110 @@
           </p>
         </div>
       </div>
+      <div class="footer-section">
+          <AppFooter />
+      </div>
 
     </div>
+
   </div>
 </template>
 
 <script setup lang="ts">
-import WorldMap from '@/components/WorldMap.vue'
-import ChinaMap from '@/components/ChinaMap.vue'
+import WorldMap from './components/WorldMap.vue'
+import ChinaMap from './components/ChinaMap.vue'
 import EarthquakeChart from './components/EarthquakeChart.vue';
 import WordCloud from './components/WordCloud.vue';
-import EmotionStackedChart from '@/components/EmotionStackedChart.vue'
-import EmotionPieChart from '@/components/EmotionPieChart.vue'
+import EmotionStackedChart from './components/EmotionStackedChart.vue'
+import EmotionPieChart from './components/EmotionPieChart.vue'
 import WordBar from './components/WordBar.vue';
 import SankeyChart from './components/SankeyChart.vue';
 import Homepage from './components/HomePage.vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+import AppFooter from './components/AppFooter.vue';
+
+// 定义导航栏结构
+const sections = [
+  { id: 'world-map', title: '全球地震分布' },
+  { id: 'china-map', title: '中国地震监测' },
+  { id: 'sentiment-analysis', title: '舆论情感分析' },
+  { id: 'hot-analysis', title: '相关热点分析' },
+  { id: 'word-frequency', title: '词频统计分析' },
+  { id: 'sankey', title: '桑基图分析' }
+];
+
+// 当前活动区块
+const activeSection = ref('');
+const completedSections = ref<string[]>([]);
+
+// 区块元素ref
+const worldMap = ref<HTMLElement | null>(null);
+const chinaMap = ref<HTMLElement | null>(null);
+const sentiment = ref<HTMLElement | null>(null);
+const hotTopics = ref<HTMLElement | null>(null);
+const wordFrequency = ref<HTMLElement | null>(null);
+const sankey = ref<HTMLElement | null>(null);
+
+// 观察器
+let observer: IntersectionObserver | null = null;
+
+onMounted(() => {
+  // 创建IntersectionObserver
+  observer = new IntersectionObserver(
+    (entries) => {
+      const completed = new Set(completedSections.value);
+
+      entries.forEach(entry => {
+        const sectionId = (entry.target as HTMLElement).id;
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.3) {
+          activeSection.value = sectionId;
+        }
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.7) {
+          completed.add(sectionId);
+        }
+      });
+
+      completedSections.value = Array.from(completed);
+    },
+    {
+      root: null,
+      rootMargin: '0px',
+      threshold: [0.3, 0.7]
+    }
+  );
+
+  // 观察所有区块元素
+  const elements = [
+    worldMap.value,
+    chinaMap.value,
+    sentiment.value,
+    hotTopics.value,
+    wordFrequency.value,
+    sankey.value
+  ].filter(el => el !== null) as HTMLElement[];
+
+  elements.forEach(element => observer?.observe(element));
+});
+
+onBeforeUnmount(() => {
+  if (observer) {
+    observer.disconnect();
+  }
+});
+
+// 滚动到特定区块
+function scrollToSection(sectionId: string) {
+  const navbarHeight = document.querySelector('.frosted-navbar')?.clientHeight || 70;
+  const element = document.getElementById(sectionId);
+  if (element) {
+    const topPos = element.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+    window.scrollTo({
+      top: topPos, // 调整滚动位置，留出导航栏空间
+      behavior: 'smooth'
+    });
+    activeSection.value = sectionId;
+  }
+}
 </script>
 
 <style scoped>
@@ -151,7 +240,8 @@ html, body {
 }
 .background-layer {
   position: absolute;
-  top: 0;
+  top: 70px;
+  /* top: 0; */
   left: 0;
   width: 100%;
   min-height: 100%;
@@ -164,7 +254,7 @@ html, body {
       -15deg,
       transparent,
       transparent 30px,
-      rgba(52, 152, 219, 0.2) 30px,  /* 改用半透明青蓝色 */
+      rgba(52, 77, 219, 0.215) 30px,  /* 改用半透明青蓝色 */
       rgba(52, 152, 219, 0.2) 32px
     );
   overflow: hidden;
@@ -193,6 +283,12 @@ html, body {
   border-radius: 8px;
 }
 
+/* 新增底部区域样式 */
+.footer-section {
+  margin-top: 60px;
+  padding: 30px 0;
+}
+
 .top-row {
   flex: 1;
   display: flex;
@@ -210,8 +306,7 @@ html, body {
 .stats-block {
   flex: 1;
   padding: 20px 40px;
-  background: #f8f9fa;
-  border-left: 1px solid #eee;
+  background: #ffffff;
 }
 
 .explanation-block {
@@ -307,6 +402,12 @@ html, body {
   /* 缩小移动端间距 */
   .map-section {
     margin: 30px 0;
+  }
+
+    /* 移动端底部调整 */
+  .footer-section {
+    margin-top: 30px;
+    padding: 20px 0;
   }
 }
 </style>
