@@ -1,7 +1,7 @@
 <!-- SankeyChart.vue -->
 <template>
   <div class="sankey-container">
-    <v-chart class="chart" :option="option" autoresize />
+    <v-chart class="chart" :option="option" autoresize @chart-ready="handleChartReady" />
   </div>
 </template>
 
@@ -13,8 +13,8 @@ import { SankeyChart } from 'echarts/charts';
 import VChart from 'vue-echarts';
 import type { ECharts } from 'echarts/core';
 import sankeyData from '../assets/sankey_data.json';
+import type { RadialGradientObject } from 'echarts';
 
-// 配置ECharts组件
 use([CanvasRenderer, SankeyChart]);
 
 interface SankeyNode {
@@ -33,33 +33,76 @@ interface SankeyLink {
 // 处理节点层级
 const processedData = ref({
   metadata: sankeyData.metadata,
-  nodes: sankeyData.nodes.map((node: SankeyNode) => {
+  nodes: sankeyData.nodes.map((node: { category: string })  => {
     if (node.category === 'root') return { ...node, depth: 0 };
-    if (node.category === 'sub') return { ...node, depth: 1 };  // sub节点在中间层
-    return { ...node, depth: 2 };                               // main节点在右侧
+    if (node.category === 'sub') return { ...node, depth: 1 };
+    return { ...node, depth: 2 };
   }) as SankeyNode[],
   links: sankeyData.links as SankeyLink[]
 });
 
-// 颜色配置系统
+// 颜色配置
 const colorConfig = {
-  root: '#888',
+  root: '#5F5D9B',
   main: {
-    Positive: '#4CAF50',
-    Negative: '#F44336',
-    Neutral: '#9E9E9E',
-    Emergency: '#FF9800'
+    Positive: '#20BF6B',
+    Negative: '#FC5C65',
+    Neutral: '#778CA3',
+    Emergency: '#FD9644'
   },
   sub: {
-    Positive: ['#C8E6C9', '#A5D6A7', '#81C784', '#66BB6A'],
-    Negative: ['#FFCDD2', '#EF9A9A', '#E57373', '#EF5350'],
-    Neutral: ['#F5F5F5', '#EEEEEE', '#E0E0E0', '#BDBDBD'],
-    Emergency: ['#FFE0B2', '#FFCC80', '#FFB74D', '#FFA726']
+    Positive: ['#7FC77F', '#63B863', '#4AAE4A', '#319431'],
+    Negative: ['#E67E90', '#D35F74', '#C13C58', '#B12645'],
+    Neutral: ['#B7C0C9', '#9CA8B5', '#8392A2', '#6B7B8D'],
+    Emergency: ['#FFA96B', '#FF9140', '#FF7916', '#E06000']
   }
+};
+
+// 生成节点颜色
+const getNodeColor = (node: SankeyNode) => {
+  if (node.category === 'root') return colorConfig.root;
+  if (node.depth === 2) return colorConfig.main[node.name as keyof typeof colorConfig.main];
+  type SubColorKey = keyof typeof colorConfig.sub;
+  const mainType = node.name.split('_')[0] as SubColorKey;
+  if (!(mainType in colorConfig.sub)) {
+    console.warn(`Invalid mainType: ${mainType}`);
+    return '#ccc'; // 返回默认颜色
+  }
+  const subNodes = processedData.value.nodes
+    .filter(n => n.category === 'sub' && n.name.startsWith(mainType))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  return colorConfig.sub[mainType][subNodes.findIndex(n => n.name === node.name) % 4];
 };
 
 // 图表配置
 const option = ref({
+  backgroundColor: {
+    type: 'radial',
+    x: 0.5,
+    y: 0.5,
+    r: 0.7,
+    colorStops: [
+      { offset: 0, color: 'rgba(240,247,255,0.8)' },
+      { offset: 1, color: 'rgba(220,230,255,0.2)' }
+    ]
+  }as RadialGradientObject,
+  title: {
+  text: '',
+  subtext: '',
+  left: 'center',
+  top: 20, // 增加顶部间距
+  padding: [15, 0], // 添加标题容器内边距
+  textStyle: {
+    color: '#2D3436',
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  subtextStyle: {
+    color: '#636E72',
+    fontSize: 14,
+    margin: [8, 0, 0, 0]
+  }
+},
   tooltip: {
     trigger: 'item',
     formatter: (params: any) => {
@@ -71,91 +114,134 @@ const option = ref({
   },
   series: [{
     type: 'sankey',
-    layout: 'none',
     data: processedData.value.nodes.map(node => ({
       name: node.name,
       depth: node.depth,
       itemStyle: {
-        color: getNodeColor(node)
+        color: getNodeColor(node),
+        opacity: 1,
+        borderWidth: 0
       }
     })),
     links: processedData.value.links,
     emphasis: {
-      focus: 'adjacency'
+      focus: 'adjacency',
+      itemStyle: {
+        borderColor: '#fff',
+        borderWidth: 2,
+        shadowBlur: 12,
+        shadowColor: 'rgba(0, 0, 0, 0.3)'
+      },
+      lineStyle: {
+        width: 3,
+        opacity: 0.8,
+        color: {
+          type: 'linear',
+          x: 0,
+          y: 0,
+          x2: 1,
+          y2: 0,
+          colorStops: [
+            { offset: 0, color: '#FFF' },
+            { offset: 1, color: '#FFEB3B' }
+          ]
+        }
+      }
     },
     lineStyle: {
-      color: 'gradient',
-      curveness: 0.25,
-      opacity: 0.2
+      color: {
+        type: 'linear',
+        x: 0,
+        y: 0,
+        x2: 1,
+        y2: 0,
+        colorStops: [
+          { offset: 0, color: 'rgba(255,255,255,0.8)' },
+          { offset: 1, color: 'rgba(150,150,150,0.8)' }
+        ]
+      },
+      curveness: 0.35,
+      opacity: 0.5
     },
     label: {
       color: 'rgba(0,0,0,0.8)',
       fontSize: 12,
+      position: (params: any) => {
+        return params.data.depth === 0 ? 'right'
+               : params.data.depth === 1 ? 'insideRight'
+               : 'left';
+      },
       formatter: (params: any) => {
-        const parts = params.name.split('_');
-        return parts.length > 1 ? parts[1] : parts[0];
+        const depth = params.data.depth;
+        const name = params.name.split('_')[1] || params.name;
+        return depth === 0 ? `{text|${name}}`
+              : depth === 2 ? `{circle|}{bold|${name}}`
+              : name;
+      },
+      rich: {
+        bold: {
+          fontWeight: 'bold',
+          fontSize: 13
+        },
+        text: {
+          color: '#fff',
+          padding: [5, 8],
+          backgroundColor: '#5F5D9B',
+          borderRadius: 15
+        },
+        circle: {
+          width: 6,
+          height: 6,
+          backgroundColor: (params: any) => getNodeColor(params.data),
+          borderRadius: 3,
+          verticalAlign: 'middle',
+          marginRight: 5
+        }
       }
     },
     nodeWidth: 12,
     nodeGap: 8,
     levels: [
-      {  // 根节点层
+      {
         depth: 0,
         itemStyle: { color: colorConfig.root },
         label: { color: '#fff' }
       },
-      {  // 中间sub节点层
+      {
         depth: 1,
         itemStyle: { opacity: 0.8 },
         label: { position: 'right' }
       },
-      {  // 右侧main节点层
+      {
         depth: 2,
-        itemStyle: { color: ({ name }: { name: string }) => colorConfig.main[name] },
+        itemStyle: { color: ({ name }: { name: string }) => colorConfig.main[name as keyof typeof colorConfig.main] },
         label: { position: 'left' }
       }
     ],
-    layout: {
-      nodeAlignment: 'justify',
-      nodeGap: 15
-    },
-    animationDurationUpdate: 800
+    animationEasing: 'elasticOut',
+    animationDuration: 1500,
+    animationDurationUpdate: 700
   }]
 });
 
-// 节点颜色生成器
-function getNodeColor(node: SankeyNode) {
-  if (node.category === 'root') return colorConfig.root;
-  if (node.depth === 2) return colorConfig.main[node.name];
-
-  const mainType = node.name.split('_')[0];
-  const subNodes = processedData.value.nodes
-    .filter(n => n.category === 'sub' && n.name.startsWith(mainType))
-    .sort((a, b) => a.name.localeCompare(b.name));
-
-  return colorConfig.sub[mainType][subNodes.findIndex(n => n.name === node.name) % 4];
-}
-
 // 响应式处理
-let observer: ResizeObserver;
+const chartRef = ref<ECharts | null>(null);
+
+const handleChartReady = (chart: ECharts) => {
+  chartRef.value = chart;
+};
+
+const handleResize = () => {
+  chartRef.value?.resize();
+};
 
 onMounted(() => {
-  const container = document.querySelector('.sankey-container');
-  if (container) {
-    observer = new ResizeObserver(entries => {
-      entries.forEach(entry => {
-        const chart = (entry.target as HTMLElement).querySelector('.chart') as any;
-        if (chart?.__vue__?.chart) {
-          chart.__vue__.chart.resize();
-        }
-      });
-    });
-    observer.observe(container);
-  }
+  window.addEventListener('resize', handleResize);
 });
 
 onBeforeUnmount(() => {
-  observer?.disconnect();
+  window.removeEventListener('resize', handleResize);
+  chartRef.value?.dispose();
 });
 </script>
 
@@ -165,6 +251,16 @@ onBeforeUnmount(() => {
   height: 100%;
   min-height: 500px;
   padding: 15px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: all 0.4s ease;
+  padding: 20px 15px;
+}
+
+.sankey-container:hover {
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
 }
 
 .chart {
@@ -172,7 +268,7 @@ onBeforeUnmount(() => {
   height: 100%;
 }
 
-/* 深度样式覆盖 */
+/* 节点样式优化 */
 :deep(.echarts-sankey-node) {
   transition: transform 0.3s;
 }
@@ -181,18 +277,16 @@ onBeforeUnmount(() => {
   margin: 10px 0;
 }
 
-:deep(.echarts-sankey-node text) {
-  font-size: 12px !important;
-  fill: #666 !important;
-  font-family: 'Microsoft YaHei', sans-serif;
-}
-
+/* 连线动画 */
 :deep(.echarts-sankey-link) {
   transition: opacity 0.3s;
+  stroke-dasharray: 5 3;
+  animation: linkFlow 20s linear infinite;
 }
 
-:deep(.echarts-sankey-link:hover) {
-  opacity: 0.6 !important;
+@keyframes linkFlow {
+  from { stroke-dashoffset: 100; }
+  to { stroke-dashoffset: 0; }
 }
 
 /* 移动端适配 */
@@ -200,16 +294,11 @@ onBeforeUnmount(() => {
   .sankey-container {
     min-height: 400px;
     padding: 8px;
+    border-radius: 8px;
   }
 
   :deep(.echarts-sankey-node text) {
     font-size: 10px !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .sankey-container {
-    min-height: 300px;
   }
 }
 </style>
