@@ -559,4 +559,45 @@ watch(selectedEmotion, () => {
 .tweet-details p {
   margin: 8px 0;
 }
+
+/* 响应式断点 */
+@media (max-width: 1200px) {
+  .chart-container {
+    min-height: 350px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 992px) {
+  .chart-container {
+    min-height: 300px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    min-height: 250px;
+    padding: 8px;
+  }
+
+  .tweet-modal-content {
+    width: 95%;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chart-container {
+    min-height: 200px;
+    padding: 5px;
+  }
+
+  .tweet-modal-content {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+  }
+}
 </style>

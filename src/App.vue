@@ -721,4 +721,134 @@ html, body {
     height: auto; /* 自适应高度 */
   }
 }
+@media screen and (max-width: 1200px) {
+  .container {
+    width: 95vw;
+    padding: 30px;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+    margin: 40px 0 20px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  /* 移动端隐藏侧边导航栏 */
+  .scroll-nav.axis-nav {
+    display: none;
+  }
+
+  /* 调整导航栏布局 */
+  .frosted-navbar {
+    padding: 0 20px;
+    height: 60px;
+  }
+
+  .nav-logo {
+    font-size: 1.2rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  /* 移动端优先布局调整 */
+  .container {
+    width: 100%;
+    padding: 20px 15px;
+    gap: 30px;
+  }
+
+  .top-row {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .map-block, .stats-block, .emotion-block, .frequency-block {
+    width: 100%;
+    min-height: 400px;
+    max-height: 500px;
+    padding: 15px;
+  }
+
+  .map-block {
+    margin-bottom: 15px;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+    margin: 30px 0 15px;
+  }
+
+  /* 移动端导航栏优化 */
+  .nav-links {
+    display: none; /* 默认隐藏完整导航 */
+  }
+
+  /* 添加汉堡菜单 */
+  .hamburger-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 21px;
+    cursor: pointer;
+  }
+
+  .hamburger-menu .bar {
+    height: 3px;
+    background: #0a3d62;
+    border-radius: 10px;
+  }
+
+  /* 移动菜单样式 */
+  .mobile-menu {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 999;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .mobile-menu.active {
+    transform: translateY(0);
+  }
+
+  .mobile-menu ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .mobile-menu li {
+    border-bottom: 1px solid rgba(10, 61, 98, 0.1);
+  }
+
+  .mobile-menu a {
+    display: block;
+    padding: 15px 20px;
+    color: #0a3d62;
+    text-decoration: none;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  /* 超小屏幕优化 */
+  .section-title {
+    font-size: 1.2rem;
+  }
+
+  .description-text {
+    font-size: 0.9rem;
+    padding: 15px 10px;
+    line-height: 1.6;
+  }
+
+  .map-block, .emotion-block, .frequency-block {
+    min-height: 350px;
+    padding: 10px;
+  }
+}
 </style>

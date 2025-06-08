@@ -4,9 +4,9 @@
     <div ref="chartContainer" class="world-chart-container"></div>
 
     <!-- 重置视图按钮：在地图容器外，避免被遮挡 -->
-    <button 
-      ref="resetBtn" 
-      class="reset-btn" 
+    <button
+      ref="resetBtn"
+      class="reset-btn"
       @click="resetChart"
       v-show="hasClicked"
     >
@@ -245,4 +245,5 @@ onBeforeUnmount(() => {
   transform: translateY(0);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
+
 </style>
