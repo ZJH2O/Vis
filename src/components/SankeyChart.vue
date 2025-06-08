@@ -76,16 +76,16 @@ const getNodeColor = (node: SankeyNode) => {
 
 // 图表配置
 const option = ref({
-  backgroundColor: {
-    type: 'radial',
-    x: 0.5,
-    y: 0.5,
-    r: 0.7,
-    colorStops: [
-      { offset: 0, color: 'rgba(240,247,255,0.8)' },
-      { offset: 1, color: 'rgba(220,230,255,0.2)' }
-    ]
-  }as RadialGradientObject,
+  // backgroundColor: {
+  //   type: 'radial',
+  //   x: 0.5,
+  //   y: 0.5,
+  //   r: 0.7,
+  //   colorStops: [
+  //     { offset: 0, color: 'rgba(240,247,255,0.8)' },
+  //     { offset: 1, color: 'rgba(220,230,255,0.2)' }
+  //   ]
+  // }as RadialGradientObject,
   title: {
   text: '',
   subtext: '',
@@ -251,17 +251,13 @@ onBeforeUnmount(() => {
   height: 100%;
   min-height: 500px;
   padding: 15px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
   overflow: hidden;
   transition: all 0.4s ease;
   padding: 20px 15px;
 }
 
-.sankey-container:hover {
-  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-}
 
 .chart {
   width: 100%;
