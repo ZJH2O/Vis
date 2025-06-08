@@ -67,28 +67,27 @@ const colorPalette = [
   '#B5B5B5'  // Negative
 ]
 
-// 颜色映射逻辑
 const getHSLColor = (count: number, maxCount: number) => {
   // 计算比例（0-1之间）
   const ratio = count / maxCount;
 
-  // 根据比例在HSL色系中插值
+  // 反转颜色映射：高词频显示红色，低词频显示黄色
   if (ratio <= 0.3) {
-    // 在0-0.3区间：深红(15°)到橙红(30°)
+    // 在0-0.3区间：浅黄(60°)到橙色(45°)
     const t = ratio / 0.3;
-    const h = 15 + t * 15; // 15° → 30°
-    return `hsl(${h}, 100%, 50%)`;
+    const h = 60 - t * 15; // 60° → 45°
+    const l = 70 - t * 15; // 70% → 55%
+    return `hsl(${h}, 100%, ${l}%)`;
   } else if (ratio <= 0.7) {
-    // 在0.3-0.7区间：橙红(30°)到橙色(45°)
+    // 在0.3-0.7区间：橙色(45°)到橙红(30°)
     const t = (ratio - 0.3) / 0.4;
-    const h = 30 + t * 15; // 30° → 45°
+    const h = 45 - t * 15; // 45° → 30°
     return `hsl(${h}, 100%, 55%)`;
   } else {
-    // 在0.7-1.0区间：橙色(45°)到浅黄(60°)
+    // 在0.7-1.0区间：橙红(30°)到深红(15°)
     const t = (ratio - 0.7) / 0.3;
-    const h = 45 + t * 15; // 45° → 60°
-    const l = 55 + t * 15; // 55% → 70%
-    return `hsl(${h}, 100%, ${l}%)`;
+    const h = 30 - t * 15; // 30° → 15°
+    return `hsl(${h}, 100%, 50%)`;
   }
 };
 

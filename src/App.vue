@@ -1,6 +1,6 @@
 <template>
   <nav class="frosted-navbar">
-    <div class="nav-logo">地震数据可视化</div>
+    <div class="nav-logo">震势·多维——地震数据可视化</div>
     <ul class="nav-links">
       <li v-for="(section, index) in sections" :key="section.id">
         <a @click="scrollToSection(section.id)" :class="{ active: activeSection === section.id }">
@@ -48,7 +48,7 @@
           </div>
         </div>
         <div class="explanation-block">
-          <p style="color: black;  padding: 15px; border-radius: 8px;">
+          <p class="description-text">
            本视图主要展示全球范围内震级大于 7 级的地震分布情况。通过地图上的散点，能直观地看到这些强震在世界各地的具体位置。
            外圈散点的大小代表震级的高低，震级越大，散点越大，便于快速识别地震的强度。内圈则表示地震的深度，深度信息有助于了解地震的地质特征。
            颜色深浅和大小的变化可以让用户更清晰地判断地震的强度和深度差异。用户还可以通过缩放和平移地图，查看不同区域的地震详细信息。
@@ -71,7 +71,7 @@
           </div>
         </div>
         <div class="explanation-block">
-          <p style="color: black;  padding: 15px; border-radius: 8px;">
+          <p class="description-text">
             此视图聚焦于中国地区的地震监测情况。地图以省份为单位，展示了各省的地震发生次数分布。颜色越深的省份，表示地震发生的次数越多。
             右侧的统计图表呈现了特定省份的地震次数和平均震级的变化情况。用户可以通过点击地图上的省份，查看该省份的详细统计信息。
             这种展示方式有助于深入了解中国不同地区的地震活动特征，为地震研究和灾害防范提供数据支持。
@@ -93,7 +93,7 @@
           </div>
         </div>
         <div class="explanation-block">
-          <p style="color: black; padding: 15px; border-radius: 8px;">
+          <p class="description-text">
             该视图主要用于分析与地震相关的舆论情感。通过堆叠图的形式，展示了不同时间段内积极、消极、中性等情感的构成比例。
             从堆叠图中可以直观地看到各种情感在不同时间段的变化趋势，有助于了解公众对地震事件的情感倾向和态度。
             对于相关部门来说，可以根据舆论情感的分析结果，及时调整信息发布策略，引导公众正确看待地震事件。
@@ -114,7 +114,7 @@
           </div>
         </div>
         <div class="explanation-block">
-          <p style="color: black;  padding: 15px; border-radius: 8px;">
+          <p class="description-text">
             本视图聚焦于地震相关的热点话题。使用饼图展示了不同情感热点的占比情况，清晰呈现了积极、消极、中性热点的分布比例。
             通过饼图可以快速把握当前地震相关的热点情感倾向，了解公众关注的重点话题。
             对于媒体和相关机构来说，可以根据热点分析结果，调整报道方向和内容，更好地满足公众的信息需求。
@@ -136,7 +136,7 @@
           </div>
         </div>
         <div class="explanation-block">
-          <p style="color: black;padding: 15px; border-radius: 8px;">
+          <p class="description-text">
            此视图进行地震相关文本的词频统计分析。词云图展示了高频词汇，字体大小表示词频高低，能够直观地反映出文本中的关键话题。
             柱状图呈现了特定时间段内的词频变化，帮助用户了解不同词汇在不同时间段的热度变化。
             通过词频统计分析，可以发现地震相关的关键话题和趋势，为深入研究地震舆情提供数据支持。
@@ -154,7 +154,7 @@
           </div>
         </div>
         <div class="explanation-block">
-          <p style="color: black; padding: 15px; border-radius: 8px;">
+          <p class="description-text">
             该视图使用桑基图展示地震相关数据的关联关系。节点表示不同类别，边表示它们之间的连接和流量，清晰呈现了数据的流向和比例关系。
             通过桑基图可以分析地震相关因素之间的相互影响，例如不同地区、不同震级、不同情感之间的关联。
             对于研究人员来说，桑基图有助于深入理解地震数据的内在结构和关系，为地震研究提供新的视角。
@@ -642,7 +642,7 @@ html, body {
   text-decoration: none;
   color: #0a3d62;
   font-weight: 500;
-  padding: 8px 15px;
+  padding: 8px 8px;
   border-radius: 20px;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -684,6 +684,41 @@ html, body {
 
   .nav-links a {
     padding: 8px;
+  }
+}
+
+/* 新增描述文本样式 */
+.description-text {
+  color: #ffffff;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  text-align: justify;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+/* 首行缩进 */
+.description-text::first-letter {
+  margin-left: 2em;
+}
+
+/* 调整区块背景 */
+.explanation-block {
+  height: 200px;
+  background: rgba(241, 243, 245, 0.393); /* 半透明背景 */
+  border-top: 1px solid rgba(238, 238, 238, 0.5);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .description-text {
+    padding: 15px;
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .explanation-block {
+    height: auto; /* 自适应高度 */
   }
 }
 </style>
