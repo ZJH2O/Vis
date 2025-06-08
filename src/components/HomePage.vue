@@ -13,7 +13,7 @@
     <!-- 艺术字标题 -->
     <h1 class="artistic-title">
       <span class="title-text">Earthquake</span>
-      <span class="title-text gold-text">Vis</span>
+      <span class="title-text gold-text">vis</span>
     </h1>
   </div>
 </template>
@@ -81,6 +81,7 @@
 }
 
 .artistic-title {
+
   position: absolute;
   top: 80%;
   left: 20%;
@@ -89,10 +90,13 @@
   text-align: center;
   font-family: 'Abril Fatface', cursive;
   font-weight: 700;
-  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+
 }
 
 .title-text {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  letter-spacing: 3px;
   display: block;
   font-size: 4.5rem;
   color: rgba(255, 255, 255, 0.95);
@@ -102,7 +106,7 @@
 
 .gold-text {
   color: #ffd700;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  font-family: 'Playfair Display', serif;
 }
 
 
