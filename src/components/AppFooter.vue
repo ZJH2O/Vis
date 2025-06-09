@@ -16,7 +16,7 @@
         <li v-for="(link, index) in friendlyLinks" :key="index">
           <a :href="link.url" target="_blank">{{ link.name }}</a>
         </li>
-        <li class="team-collab">特殊说明:舆情分析部分的数据集来自2023年2月6日土耳其地震之后近5天的Twitter公开舆论数据</li>
+        <li class="team-collab">特殊说明:舆论分析部分的数据集来自2023年2月6日土耳其地震之后近5天的Twitter公开舆论数据</li>
       </ul>
     </div>
 
@@ -39,8 +39,8 @@ export default defineComponent({
   setup() {
     const teamMembers = [
       { name: '张健豪', role: '数据收集与清洗，页面设计，词频统计分析' },
-      { name: '陈文涛', role: '舆论情感分析' },
-      { name: '张焰鑫', role: '桑基图分析' },
+      { name: '陈文涛', role: '实时舆情分析' },
+      { name: '张焰鑫', role: '情感分布分析' },
       { name: '赵元见', role: '相关热点分析' }
     ];
 

@@ -81,10 +81,27 @@
           </p>
         </div>
       </div>
-
+      <div class="map-section sentiment-section" ref="sankey" id="sankey">
+        <h2 class="section-title">情感分布分析</h2>
+        <div class="top-row">
+          <div class="map-block">
+            <SankeyChart />
+          </div>
+        </div>
+        <div class="explanation-block">
+          <p class="description-text">
+            该视图使用桑基图展示地震相关数据的关联关系。节点表示不同类别，边表示它们之间的连接和流量，清晰呈现了数据的流向和比例关系。
+            通过桑基图可以分析地震相关因素之间的相互影响，例如不同地区、不同震级、不同情感之间的关联。
+            对于研究人员来说，桑基图有助于深入理解地震数据的内在结构和关系，为地震研究提供新的视角。
+            同时，也能为地震决策提供可视化支持，帮助决策者更好地把握数据的全貌。
+            此外，通过对比不同时间段的桑基图，可以发现地震相关关系的变化趋势，为地震预测和防范提供参考。
+            这种可视化分析有助于提高地震研究和决策的科学性和准确性。
+          </p>
+        </div>
+      </div>
       <!-- 新增情感分析区块 -->
       <div class="map-section sentiment-section" ref="sentiment" id="sentiment-analysis">
-        <h2 class="section-title">舆论情感分析</h2>
+        <h2 class="section-title">实时舆情分析</h2>
         <div class="top-row">
           <div class="emotion-block">
             <EmotionStackedChart />
@@ -146,24 +163,7 @@
         </p>
         </div>
       </div>
-      <div class="map-section sentiment-section" ref="sankey" id="sankey">
-        <h2 class="section-title">桑基图分析</h2>
-        <div class="top-row">
-          <div class="map-block">
-            <SankeyChart />
-          </div>
-        </div>
-        <div class="explanation-block">
-          <p class="description-text">
-            该视图使用桑基图展示地震相关数据的关联关系。节点表示不同类别，边表示它们之间的连接和流量，清晰呈现了数据的流向和比例关系。
-            通过桑基图可以分析地震相关因素之间的相互影响，例如不同地区、不同震级、不同情感之间的关联。
-            对于研究人员来说，桑基图有助于深入理解地震数据的内在结构和关系，为地震研究提供新的视角。
-            同时，也能为地震决策提供可视化支持，帮助决策者更好地把握数据的全貌。
-            此外，通过对比不同时间段的桑基图，可以发现地震相关关系的变化趋势，为地震预测和防范提供参考。
-            这种可视化分析有助于提高地震研究和决策的科学性和准确性。
-          </p>
-        </div>
-      </div>
+
       <div class="footer-section" ref="co" id="co">
         <h2 class="section-title">团队合作</h2>
           <AppFooter />
@@ -191,10 +191,10 @@ import AppFooter from './components/AppFooter.vue';
 const sections = [
   { id: 'world-map', title: '全球地震分布' },
   { id: 'china-map', title: '中国地震监测' },
-  { id: 'sentiment-analysis', title: '舆论情感分析' },
+  { id: 'sankey', title: '情感分布分析' },
+  { id: 'sentiment-analysis', title: '实时舆情分析' },
   { id: 'hot-analysis', title: '相关热点分析' },
   { id: 'word-frequency', title: '词频统计分析' },
-  { id: 'sankey', title: '桑基图分析' },
   { id: 'co', title: '团队合作'}
 ];
 

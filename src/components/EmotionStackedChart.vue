@@ -56,6 +56,7 @@ const renderBarChart = () => {
           const val = Math.abs(p.value)
           lines.push(`${p.marker} ${p.seriesName}: ${val}`)
         })
+        lines.push('(数字代表推文条数)')
         return lines.join('<br/>')
       }
     },

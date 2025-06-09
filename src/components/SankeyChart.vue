@@ -184,16 +184,16 @@ const mainCategoriesData = sankeyData.nodes
 
 // 桑基图配置
 const sankeyOption = computed<EChartsOption>(() => ({
-  backgroundColor: {
-    type: 'radial',
-    x: 0.5,
-    y: 0.5,
-    r: 0.7,
-    colorStops: [
-      { offset: 0, color: 'rgBA(240,247,255,0.8)' },
-      { offset: 1, color: 'rgba(220,230,255,0.2)' }
-    ]
-  } as RadialGradientObject,
+  // backgroundColor: {
+  //   type: 'radial',
+  //   x: 0.5,
+  //   y: 0.5,
+  //   r: 0.7,
+  //   colorStops: [
+  //     { offset: 0, color: 'rgBA(240,247,255,0.8)' },
+  //     { offset: 1, color: 'rgba(220,230,255,0.2)' }
+  //   ]
+  // } as RadialGradientObject,
   tooltip: {
     trigger: 'item',
     backgroundColor: 'rgba(255,255,255,0.95)',
@@ -656,7 +656,7 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(95, 93, 155, 0.1);
+  /* background: rgba(95, 93, 155, 0.1); */
   padding: 8px 15px;
   border-radius: 20px;
   margin-top: 8px;
