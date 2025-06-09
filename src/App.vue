@@ -209,7 +209,7 @@ const sentiment = ref<HTMLElement | null>(null);
 const hotTopics = ref<HTMLElement | null>(null);
 const wordFrequency = ref<HTMLElement | null>(null);
 const sankey = ref<HTMLElement | null>(null);
-
+const co = ref<HTMLElement|null>(null);
 // 观察器
 let observer: IntersectionObserver | null = null;
 
@@ -245,7 +245,8 @@ onMounted(() => {
     sentiment.value,
     hotTopics.value,
     wordFrequency.value,
-    sankey.value
+    sankey.value,
+    co.value
   ].filter(el => el !== null) as HTMLElement[];
 
   elements.forEach(element => observer?.observe(element));
