@@ -104,7 +104,7 @@ const initChart = async () => {
           left: 'center',
           bottom: '5%',
           dimension: 4,
-          text: ["2005", "2025"],
+          text: ["2025", "2005"],
           calculable: true,
           inRange: {
             opacity: [0.3, 1]
