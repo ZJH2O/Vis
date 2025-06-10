@@ -38,7 +38,7 @@ export default defineComponent({
   name: 'AppFooter',
   setup() {
     const teamMembers = [
-      { name: '张健豪', role: '数据收集与清洗，页面设计，词频统计分析' },
+      { name: '张健豪', role: '数据收集与处理，页面设计，词频统计分析' },
       { name: '陈文涛', role: '实时舆情分析' },
       { name: '张焰鑫', role: '情感分布分析' },
       { name: '赵元见', role: '相关热点分析' }

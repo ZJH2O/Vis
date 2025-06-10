@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "build": "vite build && copy dist\\index.html dist\\404.html",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@types/d3": "^7.4.3",
@@ -41,6 +42,7 @@
     "@vue/tsconfig": "^0.7.0",
     "eslint": "^9.22.0",
     "eslint-plugin-vue": "~10.0.0",
+    "gh-pages": "^6.3.0",
     "jiti": "^2.4.2",
     "npm-run-all2": "^7.0.2",
     "typescript": "~5.8.0",

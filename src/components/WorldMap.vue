@@ -19,7 +19,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import * as echarts from 'echarts/core';
 import type { ECharts } from 'echarts/core';
 import worldearthquakeData from '@/assets/WorldEarthquakes.json';
-
+import worldJson from '@/assets/worldMap.json'
 const chartContainer = ref(null);
 const resetBtn = ref(null);
 let myChart: ECharts | null = null;
@@ -38,8 +38,6 @@ const earthquakeData = worldearthquakeData.map(item => ({
 
 const initChart = async () => {
   try {
-    const response = await fetch("https://img.isqqw.com/profile/upload/2025/03/11/b90bf3d4-6c6f-4ef1-acd1-4edd925acaed.json");
-    const worldJson = await response.json();
     echarts.registerMap('world', worldJson);
 
     const option = {

@@ -6,9 +6,12 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/EarthquakeVis/',
   plugins: [
     vue(),
-    vueDevTools(),
+    process.env.NODE_ENV === 'development'
+      ? vueDevTools()
+      : null
   ],
   resolve: {
     alias: {

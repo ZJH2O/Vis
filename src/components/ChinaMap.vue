@@ -24,7 +24,7 @@ import { CanvasRenderer } from 'echarts/renderers';
 import type { ECharts } from 'echarts/core';
 import provinceData from '@/assets/province_earthquake_counts_fullname.json';
 import { useProvinceStore } from '@/stores/province';
-
+import ChinaJson from '@/assets/ChinaMap.json'
 echarts.use([
   TooltipComponent,
   VisualMapComponent,
@@ -38,15 +38,15 @@ const provinceStore = useProvinceStore();
 const chartContainer = ref(null);
 const resetBtn = ref(null);
 let myChart: ECharts | null = null;
-let hasClicked = ref(false);
-let canDrag = ref(false);
+const hasClicked = ref(false);
+const canDrag = ref(false);
 const initialZoom = 1.2;
-let initialCenter = [105, 38];
+const initialCenter = [105, 38];
 
 const initChart = async () => {
   try {
-    const response = await fetch("https://img.isqqw.com/profile/upload/2025/03/06/dea061ec-92cd-41a9-aa64-e50fa4400133.json");
-    const ChinaJson = await response.json();
+    // const response = await fetch("https://img.isqqw.com/profile/upload/2025/03/06/dea061ec-92cd-41a9-aa64-e50fa4400133.json");
+    // const ChinaJson = await response.json();
     echarts.registerMap('China', ChinaJson);
 
     const totalValue = provinceData.reduce((sum, item) => sum + item.value, 0);

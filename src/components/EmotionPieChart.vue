@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { use } from 'echarts/core'
 import VChart from 'vue-echarts'
 import { CanvasRenderer } from 'echarts/renderers'
@@ -32,7 +32,7 @@ import {
   GridComponent,
   ToolboxComponent
 } from 'echarts/components'
-import { EChartsOption, SeriesOption, PieSeriesOption, ScatterSeriesOption } from 'echarts'
+import type{ EChartsOption,  PieSeriesOption, ScatterSeriesOption } from 'echarts'
 
 // Register ECharts components
 use([
