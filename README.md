@@ -3,9 +3,9 @@
 
 [![Vue](https://img.shields.io/badge/Vue-3.x-brightgreen?style=flat-square&logo=vue.js)](https://vuejs.org/)
 [![部署状态](https://img.shields.io/github/deployments/zjh2o/EarthquakeVis/github-pages?label=部署状态&style=flat-square)](https://zjh2o.github.io/EarthquakeVis/#/)
-[![Open in Gitpod](https://img.shields.io/badge/Open_in-Gitpod-green?logo=gitpod&style=flat-square)](https://gitpod.io/#https://github.com/zjh2o/EarthquakeVis)
 
 **在线访问**： [https://zjh2o.github.io/EarthquakeVis/#/](https://zjh2o.github.io/EarthquakeVis/#/)
+**项目部署仓库**： [https://github.com/ZJH2O/EarthquakeVis](https://github.com/ZJH2O/EarthquakeVis)
 
 > 基于地震科学的多维数据可视化平台，集成了全球强震分布、中国地震监测、舆情情感分析与文本挖掘功能，为科研人员与应急管理部门提供决策支持。
 
