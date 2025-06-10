@@ -1,39 +1,19 @@
-# Vis
+# 🌍 地震数据可视化
 
-This template should help get you started developing with Vue 3 in Vite.
 
-## Recommended IDE Setup
+[![Vue](https://img.shields.io/badge/Vue-3.x-brightgreen?style=flat-square&logo=vue.js)](https://vuejs.org/)
+[![部署状态](https://img.shields.io/github/deployments/zjh2o/EarthquakeVis/github-pages?label=部署状态&style=flat-square)](https://zjh2o.github.io/EarthquakeVis/#/)
+[![Open in Gitpod](https://img.shields.io/badge/Open_in-Gitpod-green?logo=gitpod&style=flat-square)](https://gitpod.io/#https://github.com/zjh2o/EarthquakeVis)
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+**在线访问**： [https://zjh2o.github.io/EarthquakeVis/#/](https://zjh2o.github.io/EarthquakeVis/#/)
 
-## Type Support for `.vue` Imports in TS
+> 基于地震科学的多维数据可视化平台，集成了全球强震分布、中国地震监测、舆情情感分析与文本挖掘功能，为科研人员与应急管理部门提供决策支持。
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## ✨ 核心功能
+- **全球强震分析**：2005-2025年7级以上地震空间分布
+- **中国地震热力图**：省级地震频次与强度可视化
+- **情感演化追踪**：灾情周期内的公众情绪演变分析
+- **语义特征挖掘**：地震相关热点话题与词频分析
 
-## Customize configuration
 
-See [Vite Configuration Reference](https://vite.dev/config/).
 
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
